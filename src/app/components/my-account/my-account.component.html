@@ -1,0 +1,241 @@
+<mat-toolbar color="primary">
+  <app-logo></app-logo>
+</mat-toolbar>
+<div class="header-text">
+  <h5>החשבון שלי</h5>
+</div>
+<div class="card-data">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <div class="row">
+          <div class="col-md-12 mb-2">
+            <mat-checkbox
+              [(ngModel)]="read_only"
+              labelPosition="before"
+              style="margin-right: 5px;margin-top: 5px;"
+            >
+              ערוך את הפרטים שלי
+            </mat-checkbox>
+          </div>
+        </div>
+        <form #resetForm="ngForm" (ngSubmit)="editData(resetForm)">
+          <div class="row" *ngIf="authError">
+            <div class="col-12 alert alert-danger">
+              {{ authError?.message }}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-2">
+              <label for="firstName">שם פרטי</label>
+              <input
+                [(ngModel)]="firstname"
+                [readonly]="!read_only"
+                #firstnameControl="ngModel"
+                name="firstName"
+                type="text"
+                class="form-control"
+                id="firstName"
+                required
+              />
+              <div class="comment-text" *ngIf="!firstnameControl.valid">
+                אנא הזן שם פרטי<span class="must-filed">*</span>
+              </div>
+            </div>
+            <div class="col-md-6 mb-2 ">
+              <label for="lastName">שם משפחה</label>
+              <input
+                [(ngModel)]="lastname"
+                [readonly]="!read_only"
+                #lastnameControl="ngModel"
+                name="lastName"
+                type="text"
+                class="form-control"
+                id="lastName"
+                required
+              />
+              <div class="comment-text" *ngIf="!lastnameControl.valid">
+                אנא הזן שם משפחה<span class="must-filed">*</span>
+              </div>
+            </div>
+          </div>
+          <div class="row marg-top-10">
+            <div class="col-md-12 mb-2">
+              <label for="phoneNum">מספר טלפון נייד</label>
+              <input
+                [(ngModel)]="phoneNum"
+                [readonly]="!read_only"
+                #phoneNumControl="ngModel"
+                name="phoneNum"
+                type="text"
+                class="form-control"
+                required
+              />
+              <div class="comment-text" *ngIf="!phoneNumControl.valid">
+                אנא הזן מספר טלפון נייד<span class="must-filed">*</span>
+              </div>
+            </div>
+          </div>
+          <div class="row ">
+            <div class="col-md-4 mb-2 marg-top-10">
+              <label for="bankNum">שם הבנק</label>
+              <input
+                [(ngModel)]="bankName"
+                [readonly]="!read_only"
+                #bankNameControl="ngModel"
+                name="bankName"
+                type="text"
+                class="form-control"
+                required
+              />
+              <div class="comment-text" *ngIf="!bankNameControl.valid">
+                אנא מלא את שם הבנק שלך<span class="must-filed">*</span>
+              </div>
+            </div>
+            <div class="col-md-4 mb-2 marg-top-10">
+              <label for="bankNum">מספר הסניף</label>
+              <input
+                [(ngModel)]="bankLocationNum"
+                [readonly]="!read_only"
+                #bankLocationNumControl="ngModel"
+                name="bankLocationNum"
+                type="text"
+                class="form-control"
+                required
+              />
+              <div class="comment-text" *ngIf="!bankLocationNumControl.valid">
+                אנא הזן את מספר סניף הבנק שלך<span class="must-filed">*</span>
+              </div>
+            </div>
+            <div class="col-md-4 mb-2 marg-top-10">
+              <label for="bankNum">מספר חשבון בנק</label>
+              <input
+                [(ngModel)]="bankNum"
+                [readonly]="!read_only"
+                #bankNumControl="ngModel"
+                name="bankNum"
+                type="text"
+                class="form-control"
+                required
+              />
+              <div class="comment-text" *ngIf="!bankNumControl.valid">
+                אנא הזן מספר חשבון בנק שלך לזיכוי<span class="must-filed"
+                  >*</span
+                >
+              </div>
+            </div>
+          </div>
+          <div class="row marg-top-10" *ngIf="read_only">
+            <div class="col-md-12">
+              <button class="btn btn-primary" type="submit">עדכן פרטים</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card-data">
+  <div class="container">
+    <div class="row" style="margin-top: 25px;">
+      <div class="col-12">
+        <div class="row">
+          <div class="col-md-6 mb-2">
+            <mat-checkbox
+              [disabled]="read_only_email"
+              [(ngModel)]="read_only_password"
+              labelPosition="before"
+              style="margin-right: 5px;margin-top: 5px;"
+            >
+              ערוך את הסיסמה
+            </mat-checkbox>
+          </div>
+          <div class="col-md-6 mb-2">
+            <mat-checkbox
+              [disabled]="read_only_password"
+              [(ngModel)]="read_only_email"
+              labelPosition="before"
+              style="margin-right: 5px;margin-top: 5px;"
+            >
+              ערוך את המייל
+            </mat-checkbox>
+          </div>
+        </div>
+        <form
+          #UpdateEmailPass="ngForm"
+          (ngSubmit)="editEmailAndPassword(UpdateEmailPass)"
+        >
+          <div class="row" *ngIf="authError">
+            <div class="col-12 alert alert-danger">
+              {{ authError?.message }}
+            </div>
+          </div>
+          <div class="row" *ngIf="read_only_password">
+            <div class="col-md-6 mb-2 ">
+              <label for="newPassword">מלא סיסמה חדשה </label>
+              <input
+                type="password"
+                [(ngModel)]="newPassword"
+                [readonly]="!read_only_password"
+                #newPasswordControl="ngModel"
+                name="newPassword"
+                class="form-control"
+                id="newPassword"
+                required
+              />
+              <div class="comment-text" *ngIf="!newPasswordControl.valid">
+                סיסמה חדשה<span class="must-filed">*</span>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-2">
+              <label for="newPassword2">מלא סיסמה חדשה </label>
+              <input
+                type="password"
+                [(ngModel)]="newPassword2"
+                [readonly]="!read_only_password"
+                #newPassword2Control="ngModel"
+                name="newPassword2"
+                class="form-control"
+                required
+              />
+              <div class="comment-text" *ngIf="!newPassword2Control.valid">
+                מלא סיסמה חדשה<span class="must-filed">*</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="row" *ngIf="read_only_email">
+            <div class="col-md-12 mb-2">
+              <label for="newEmail">אימייל חדש</label>
+              <input
+                [(ngModel)]="newEmail"
+                [readonly]="!read_only_email"
+                #newEmailControl="ngModel"
+                name="newEmail"
+                type="text"
+                class="form-control"
+                id="newEmail"
+                required
+              />
+              <div class="comment-text" *ngIf="!newEmailControl.valid">
+                המייל חדש<span class="must-filed">*</span>
+              </div>
+            </div>
+          </div>
+          <div
+            class="row marg-top-10"
+            *ngIf="read_only_password || read_only_email"
+          >
+            <div class="col-md-12">
+              <button class="btn btn-primary" type="submit">
+                עדכן סיסמה או מייל
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

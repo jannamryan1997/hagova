@@ -1,0 +1,90 @@
+<mat-toolbar color="primary">
+        <app-logo></app-logo>
+</mat-toolbar>
+<div class="header-text">
+    <h5>הרשמה לאתר</h5>
+</div>
+<div class="card-data">
+    <div class="container">
+          <div class="row mt-4">
+              <div class="col-12">
+                  <div class="row" *ngIf="authError">
+                      <div class="col-12 alert alert-danger">
+                          {{ authError?.message }}
+                        </div>
+                    </div>
+                    <form #userRegForm="ngForm" (ngSubmit)="createUser(userRegForm)">
+                    <div class="row">
+                        <div class="col-md-6 mb-2 ">
+                            <label for="lastName">שם משפחה</label>
+                            <input [(ngModel)]="lastname" #lastnameControl="ngModel" name="lastName" type="text" class="form-control" id="lastName" required>
+                            <div class="comment-text" *ngIf="!lastnameControl.valid">אנא הזן שם משפחה<span class="must-filed">*</span></div>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <label for="firstName">שם פרטי</label>
+                            <input [(ngModel)]="firstname" #firstnameControl="ngModel" name="firstName" type="text" class="form-control" id="firstName" required>
+                            <div class="comment-text" *ngIf="!firstnameControl.valid">אנא הזן שם פרטי<span class="must-filed">*</span></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mb-2">
+                            <label for="email">אימייל</label>
+                            <input [(ngModel)]="email" #emailControl="ngModel" name="email" type="email" class="form-control" required> 
+                            <div class="comment-text" *ngIf="!emailControl.valid">אנא הזן אימייל<span class="must-filed">*</span></div>
+                        </div>
+                    </div>
+                    <div class="row marg-top-10">
+                        <div class="col-md-12 mb-2">
+                            <label for="phoneNum">מספר טלפון נייד</label>
+                            <input [(ngModel)]="phoneNum" #phoneNumControl="ngModel" name="phoneNum" type="text" class="form-control" required>
+                            <div class="comment-text" *ngIf="!phoneNumControl.valid">אנא הזן מספר טלפון נייד<span class="must-filed">*</span></div>
+                        </div>
+                    </div>
+                    <div class="row ">
+                        <div class="col-md-4 mb-2 marg-top-10">
+                            <label for="bankNum">שם הבנק</label>
+                            <input [(ngModel)]="bankName" #bankNameControl="ngModel" name="bankName" type="text" class="form-control" required>
+                            <div class="comment-text" *ngIf="!bankNameControl.valid">אנא מלא את שם הבנק שלך<span class="must-filed">*</span></div>
+                        </div>
+                        <div class="col-md-4 mb-2 marg-top-10">
+                            <label for="bankNum">מספר הסניף</label>
+                            <input [(ngModel)]="bankLocationNum" #bankLocationNumControl="ngModel" name="bankLocationNum" type="text" class="form-control" required>
+                            <div class="comment-text" *ngIf="!bankLocationNumControl.valid">אנא הזן את מספר סניף הבנק שלך<span class="must-filed">*</span></div>
+                        </div>
+                        <div class="col-md-4 mb-2 marg-top-10">
+                            <label for="bankNum">מספר חשבון בנק</label>
+                            <input [(ngModel)]="bankNum" #bankNumControl="ngModel" name="bankNum" type="text" class="form-control" required>
+                            <div class="comment-text" *ngIf="!bankNumControl.valid">אנא הזן מספר חשבון בנק שלך לזיכוי<span class="must-filed">*</span></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="row marg-top-10">
+                            <div class="col-md-12 mb-2">
+                                <label for="password">סיסמה</label>
+                                <input [(ngModel)]="password" #passwordControl="ngModel" name="password" type="password" class="form-control" required>
+                                <div class="comment-text" *ngIf="!passwordControl.valid">אנא הזן סיסמה בעלת שש ספרות לפחות<span class="must-filed">*</span></div>
+                            </div>
+                        </div>
+                        <div class="row marg-top-10">
+                            <div class="col-md-12 mb-2">
+                                <label>ודא סיסמה</label>
+                                <input [(ngModel)]="passwordRep" #passwordRepControl="ngModel" name="passwordRep" type="password" class="form-control" required>
+                                <div class="comment-text" *ngIf="!passwordRepControl.valid">חזור על הסיסמה<span class="must-filed">*</span></div>
+                            </div>
+                        </div>
+                        <div class="row marg-top-10">
+                            <div class="col-md-12">
+                                <div class="terms-check">
+                                    <span>בלחיצה על הרשמה אתה מאשר את
+                                        <a class="terms-link" (click)="termsAndConditions()">תקנון האתר</a>*
+                                    </span> 
+                                </div>
+                                <button class="btn btn-primary" type="submit" [disabled]="!userRegForm.valid">הירשם</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

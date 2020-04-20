@@ -1,0 +1,116 @@
+.main-content {
+  width: 100%;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  margin: auto;
+  height: 100%;
+}
+.col-in-main {
+  flex: 1;
+}
+
+::ng-deep p-dialog .ui-dialog {
+  overflow: scroll;
+  max-height: 100%;
+}
+
+@media screen and (max-width: 900px) {
+  .main-content {
+    display: flex;
+    flex-direction: column-reverse;
+  }
+}
+
+.header-raw {
+  display: flex;
+  flex-direction: row;
+
+  justify-content: center;
+  align-items: center;
+}
+
+.registration-button {
+  .btn {
+    color: white;
+  }
+  .btn:hover {
+    color: rgb(0, 0, 0);
+  }
+}
+.hello-user {
+  margin-left: 3px;
+}
+.details {
+  width: 100%;
+  color: white;
+  background: #334294;
+  height: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.details-user {
+  margin-right: 5px;
+}
+.btn_second {
+  color: #fff;
+  background-color: #007bff;
+  border-color: #007bff;
+  width: 100%;
+}
+h6 {
+  margin-top: 7px;
+}
+.crad {
+  background-color: #ececec;
+  margin: 15px 15px 30px 15px;
+  border-radius: 5px;
+  padding-bottom: 1em;
+}
+.card-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.card-choose-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  justify-items: center;
+}
+.card-choose-package {
+  width: 250px;
+  button {
+    width: 100%;
+  }
+
+  button:hover {
+    background-color: #334294;
+  }
+}
+.sub-button {
+  margin-top: 25px;
+}
+.example-text {
+  cursor: pointer;
+}
+.card-header-text {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  span {
+    font-size: 20px;
+  }
+}
+hr {
+  margin-top: 0rem;
+  margin-bottom: 0px;
+  border: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.5);
+}
+.upload-files {
+  margin-top: 15px;
+}

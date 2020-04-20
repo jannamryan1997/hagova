@@ -1,0 +1,148 @@
+<mat-toolbar color="primary">
+  <app-logo></app-logo>
+</mat-toolbar>
+<div class="details" *ngIf="user">
+  <div></div>
+  <div class="details-user">
+    <span class="hello-user">שלום:</span> {{ user?.displayName }}
+  </div>
+</div>
+<div class="card-data">
+  <div class="crad margin-bottom-10" style="margin-bottom: 25px;">
+    <div class="container">
+      <div class="row mt-4">
+        <div class="col-12 ">
+          <div class="row marg-top-10">
+            <h5
+              class="col-md-12 mb-2"
+              style="font-size: 20px;text-align: right; margin-bottom: 5px; margin-left: 10px;margin-right: 10px;"
+            >
+              הנחות, מבצעים וחבילות
+              <hr />
+            </h5>
+          </div>
+          <div class="row">
+            <!-- <div class="col-md-6 mb-1 marg-top-10">
+                    <div class="card" style="height: 100%;margin-left: 10px;margin-right: 10px;" dir="rtl">
+                    <div class="card-body d-flex flex-column" style="text-align: right;" >
+                      <h5 class="card-title"  >מסלול חד פעמי</h5>
+                      <p class="card-text">תשלום חד פעמי עבור נקוב עבור כל שירות</p>
+                      <div style="margin-bottom: 5px;">
+                          <hr/>
+                      </div>               
+                      <p class="card-text">-שליחת מייל מעורך דין - 5 ש"ח</p>
+                      <p class="card-text">-שליחת סמס מעורך דין - 5 ש"ח</p>
+                      <p class="card-text">-שליחת מכתב רשום - 20 ש"ח</p>
+                    </div>
+                  </div>
+                </div>
+      
+                <div class="col-md-6 mb-1 marg-top-10">
+                    <div class="card" style="height: 100%;margin-left: 10px;margin-right: 10px;" dir="rtl">
+                    <div class="card-body d-flex flex-column" style="text-align: right;">
+                      <h5 class="card-title"  >מסלול סטנדרטי</h5>
+                      <p class="card-text">תשלום חודשי של 50 ש"ח לחודש</p>
+                      <div style="margin-bottom: 5px;">
+                        <hr/>
+                      </div>                
+                      <p class="card-text">-שליחת 5 מיילים מעורך דין</p>
+                      <p class="card-text"> -שליחת 5 הודעות סמס מעורך דין</p>
+                      <p class="card-text">-שליחת מכתב רשום אחד</p>
+                      <button class="btn btn-primary mt-auto">המשך לחבילה</button>
+                    </div>
+                  </div>
+                </div> -->
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-1 marg-top-10">
+              <div
+                class="card"
+                style="height: 100%;margin-left: 10px;margin-right: 10px;"
+                dir="rtl"
+              >
+                <div
+                  class="card-body d-flex flex-column"
+                  style="text-align: right;"
+                >
+                  <h5 class="card-title" style="color: rgb(133, 133, 133);">
+                    מסלול רגיל
+                  </h5>
+                  <p class="card-text">תשלום חודשי של 300 ש"ח לחודש</p>
+                  <div style="margin-bottom: 5px;">
+                    <hr />
+                  </div>
+                  <p class="card-text">-שליחת 10 מיילים מעורך דין</p>
+                  <p class="card-text">-שליחת 10 הודעות סמס מעורך דין</p>
+                  <p class="card-text">-שליחת 4 מכתבים רשומים</p>
+                  <button
+                    class="btn btn-primary mt-auto"
+                    (click)=" sendPayment(20)"
+                  >
+                    המשך לחבילה
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-1 marg-top-10">
+              <div
+                class="card"
+                style="height: 100%;margin-left: 10px;margin-right: 10px;"
+                dir="rtl"
+              >
+                <div
+                  class="card-body d-flex flex-column"
+                  style="text-align: right;"
+                >
+                  <h5 class="card-title" style="color: rgb(255, 145, 0);">
+                    מסלול זהב
+                  </h5>
+                  <p class="card-text">תשלום חודשי של 500 ש"ח לחודש</p>
+                  <div style="margin-bottom: 5px;">
+                    <hr />
+                  </div>
+                  <p class="card-text">
+                    -שליחת כמות לא מוגבלת של מיילים מעורך דין
+                  </p>
+                  <p class="card-text">
+                    -שליחת כמות לא מוגבלת של הודעות סמס מעורך דין
+                  </p>
+                  <p class="card-text">-שליחת 6 מכתבים רשומים</p>
+                  <button
+                    class="btn btn-primary mt-auto"
+                    (click)="sendPayment(10)"
+                  >
+                    המשך לחבילה
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <a (click)="getBack()" class="back-to-home"><p>חזור לדף הבית</p></a>
+    </div>
+  </div>
+</div>
+
+<p-dialog
+  header="משהו השתבש"
+  [(visible)]="error_disp"
+  [modal]="true"
+  [responsive]="true"
+  [style]="{ width: '350px', minWidth: '200px' }"
+  [minY]="70"
+  [maximizable]="true"
+  [baseZIndex]="10000"
+>
+  <p style="color: red;">{{ error_text }}</p>
+  <p-footer>
+    <button
+      type="button"
+      pButton
+      icon="pi pi-check"
+      (click)="CloseErrorDialog()"
+      label="אוקי"
+    ></button>
+  </p-footer>
+</p-dialog>

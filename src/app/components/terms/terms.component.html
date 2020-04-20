@@ -1,0 +1,29 @@
+<mat-toolbar color="primary">
+    <mat-toolbar-row class="header-raw">
+            <div>תקנון</div>
+        <div class="content">
+            <div class="header-text">
+                    <span class="second-header-text">עורך הדין הווירטואלי שלך</span>
+            </div>
+            <div class="header-text">
+                <span class="main-header-text">סוגרים חשבון</span>
+            </div>
+        </div>
+
+    </mat-toolbar-row>
+</mat-toolbar>
+
+<div class="terms-text">
+    <div class="container">
+        <div class="row mt-4">
+            <div class="col-12 ">
+                <div class="row marg-top-10">
+                    <div class="col-md-12 mb-2" *ngFor="let data of termsText">
+                        <p dir="rtl">{{data}} </p>
+                    </div>
+                </div>      
+            </div>
+        </div>
+        <a (click)="getBack()" class="back-to-register"><p>חזור לדף ההרשמה</p></a>
+    </div>
+</div>

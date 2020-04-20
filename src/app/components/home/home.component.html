@@ -1,0 +1,640 @@
+<mat-toolbar color="primary">
+  <app-logo></app-logo>
+  <mat-toolbar-row class="header-raw">
+    <div class="registration-button">
+      <button class="btn" (click)="choosePackage()" style="margin-right: 15px;">
+        הנחה
+      </button>
+      <button class="btn" (click)="about()" style="margin-right: 15px;">
+        אודות
+      </button>
+      <button
+        class="btn "
+        *ngIf="!user"
+        style="margin-right: 15px;"
+        (click)="register()"
+      >
+        הרשמה
+      </button>
+      <button
+        class="btn"
+        *ngIf="user"
+        (click)="myAccount()"
+        style="margin-right: 15px;"
+      >
+        החשבון שלי
+      </button>
+      <button class="btn" *ngIf="user" (click)="logout()">יציאה</button>
+      <button class="btn" *ngIf="!user" (click)="login()">כניסה</button>
+    </div>
+  </mat-toolbar-row>
+</mat-toolbar>
+<div class="details" *ngIf="user">
+  <!-- spacer -->
+  <div></div>
+  <!-- end spacer -->
+  <div class="details-user">
+    <span class="hello-user">שלום:</span> {{ user?.displayName }}
+  </div>
+</div>
+<hr />
+<div class="details" *ngIf="user">
+  <!-- spacer -->
+  <div></div>
+  <!-- end spacer -->
+  <div class="details-user">
+    <span class="hello-user" style="margin-right: 5px;">מיילים:</span
+    >{{ _emails }}
+    <span class="hello-user" style="margin-right: 5px;">סמסים:</span>{{ _sms }}
+    <span class="hello-user" style="margin-right: 5px;">דואר רשום:</span
+    >{{ _mails }}
+  </div>
+</div>
+
+<div class="main-content">
+  <div class="crad col-in-main">
+    <div class="container" style="height: 100%;">
+      <div class="card-header-text ">
+        <span></span>
+        <span class="marg-top-10">פרטי החייב</span>
+      </div>
+      <hr />
+      <div class="row mt-4">
+        <div class="col-12 ">
+          <form #userOwesData="ngForm" (ngSubmit)="sendLetter(userOwesData)">
+            <div class="row" *ngIf="_error != ''">
+              <div class="col-12 alert alert-danger">{{ _error }}</div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-2 marg-top-10">
+                <label for="lastName">שם משפחה</label>
+                <input
+                  [(ngModel)]="lastname"
+                  #lastnameControl="ngModel"
+                  name="lastName"
+                  type="text"
+                  class="form-control"
+                  id="lastName"
+                  required
+                />
+                <div class="comment-text" *ngIf="!lastnameControl.valid">
+                  שם המשפחה של החייב<span class="must-filed">*</span>
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-2 marg-top-10">
+                <label for="firstName">שם פרטי</label>
+                <input
+                  [(ngModel)]="firstname"
+                  #firstnameControl="ngModel"
+                  name="firstName"
+                  type="text"
+                  class="form-control"
+                  id="firstName"
+                  required
+                />
+                <div class="comment-text" *ngIf="!firstnameControl.valid">
+                  שם הפרטי של החייב<span class="must-filed">*</span>
+                </div>
+              </div>
+            </div>
+            <!-- <div
+              class="row marg-top-10"
+              *ngIf="
+                checkedCall ||
+                checkedEmail ||
+                checkedMail ||
+                checkedReminderEmail
+              "
+            >
+              <div class="col-md-12 mb-2">
+                <label for="email">אימייל</label>
+                <input
+                  [(ngModel)]="email"
+                  #emailControl="ngModel"
+                  name="email"
+                  type="email"
+                  class="form-control"
+                  required
+                />
+                <div class="comment-text" *ngIf="!emailControl.valid">
+                  מייל החייב<span class="must-filed">*</span>
+                </div>
+              </div>
+            </div> -->
+            <div class="row marg-top-10">
+              <div
+                class="col-md-6 mb-2"
+                *ngIf="
+                                
+                "
+              >
+                <label for="email">אימייל</label>
+                <input
+                  [(ngModel)]="email"
+                  #emailControl="ngModel"
+                  name="email"
+                  type="email"
+                  class="form-control"
+                  required
+                />
+                <div class="comment-text" *ngIf="!emailControl.valid">
+                  מייל החייב<span class="must-filed">*</span>
+                </div>
+              </div>
+              <div
+                class="mb-2"
+                [ngClass]="{
+                  'col-md-12 ':
+                    !checkedEmail &&
+                    !checkedCall &&
+                    !checkedMail &&
+                    !checkedReminderEmail,
+                  'col-md-6':
+                    checkedCall ||
+                    checkedEmail ||
+                    checkedMail ||
+                    checkedReminderEmail
+                }"
+              >
+                <label for="phoneNum">מספר טלפון נייד</label>
+                <input
+                  [(ngModel)]="phoneNum"
+                  #phoneNumControl="ngModel"
+                  name="phoneNum"
+                  type="text"
+                  class="form-control"
+                  required
+                />
+                <div class="comment-text" *ngIf="!phoneNumControl.valid">
+                  מספר הטלפון הנייד של החייב<span class="must-filed">*</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="row marg-top-10" *ngIf="checkedCall || checkedMail">
+              <div class="col-md-6 mb-2">
+                <label for="addressCity">עיר המגורים של החייב</label>
+                <input
+                  [(ngModel)]="addressCity"
+                  #addressCityControl="ngModel"
+                  name="addressCity"
+                  type="text"
+                  class="form-control"
+                  id="addressCity"
+                  required
+                />
+                <div class="comment-text" *ngIf="!addressCityControl.valid">
+                  עיר המגורים של החייב<span class="must-filed">*</span>
+                </div>
+              </div>
+              <div class="col-md-6 mb-2 ">
+                <label for="addressStreet">רחוב ומספר בית של החייב</label>
+                <input
+                  [(ngModel)]="addressStreet"
+                  #addressStreetControl="ngModel"
+                  name="addressStreet"
+                  type="text"
+                  class="form-control"
+                  id="addressStreet"
+                  required
+                />
+                <div class="comment-text" *ngIf="!addressStreetControl.valid">
+                  רחוב ומספר בית של החייב
+                  <span class="must-filed">*</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="row marg-top-10">
+              <div class="col-md-12 mb-2">
+                <label for="debtSum"> סכום החוב</label>
+                <div style="display: flex; flex-direction: row;">
+                  <input
+                    [(ngModel)]="debtSum"
+                    #debtSumControl="ngModel"
+                    placeholder="שקלים"
+                    name="debtSum"
+                    type="text"
+                    class="form-control"
+                    id="debtSum"
+                    required
+                  />
+                  <input
+                    [(ngModel)]="debtSumAgorot"
+                    name="debtSumAgorot"
+                    placeholder="אגורות"
+                    style="width:80px; margin-left: 15px;"
+                    type="text"
+                    class="form-control"
+                    id="debtSumAgorot"
+                  />
+                </div>
+
+                <div class="comment-text" *ngIf="!debtSumControl.valid">
+                  סכום החוב של החייב בשקלים<span class="must-filed">*</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="row marg-top-10">
+              <div class="col-md-12 mb-2">
+                <mat-form-field class="w-100" style="text-align: right;">
+                  <input
+                    matInput
+                    [matDatepicker]="picker"
+                    placeholder="?ממתי החוב"
+                    [(ngModel)]="debtDate"
+                    [max]="today"
+                    name="debtDate"
+                    #debtDateControl="ngModel"
+                    required
+                  />
+                  <mat-datepicker-toggle
+                    matSuffix
+                    [for]="picker"
+                  ></mat-datepicker-toggle>
+                  <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <!-- <div class="row marg-top-10">
+                        <div class="col-md-12 mb-2">
+                          <div class="upload-files">
+                            <div class="comment-text" dir="rtl" style="text-align: right; margin-bottom: 5px; color: rgb(2, 2, 2);">*שים לב שבקובץ שאתה מעלה יש חתימה של החייב. אחרת, תתקשה לפתוח תיק הוצאה לפועל, ותוכל רק לפתוח תביעה בבית משפט. </div>
+                            <p-fileUpload  name="myfile[]" customUpload="true" (uploadHandler)="myUploader($event)" multiple="multiple"
+                            accept="image/*" maxFileSize="5000000"></p-fileUpload>
+                          </div>
+                        </div>
+                      </div> -->
+            <div>
+              <div class="row sub-button">
+                <div class="col-md-12">
+                  <span style="margin-left: 5px; font-weight: bold;" dir="rtl"
+                    >{{ price }} ש"ח
+                  </span>
+                  <span style="margin-left: 5px;" dir="rtl">מחיר השירות:</span>
+                  <button
+                    type="button"
+                    pButton
+                    style="margin-left: 10px;"
+                    type="submit"
+                    [disabled]="
+                      !userOwesData.valid ||
+                      !user ||
+                      (!checkedCall &&
+                        !checkedEmail &&
+                        !checkedMail &&
+                        !checkedReminderSms &&
+                        !checkedSms &&
+                        !checkedReminderEmail)
+                    "
+                    label="שלח"
+                    class="ui-button-success"
+                  ></button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="crad col-in-main">
+    <div class="container ">
+      <div class="card-header-text ">
+        <span></span>
+        <span class="marg-top-10"> בחירת שירות </span>
+      </div>
+      <hr />
+
+      <div class="row mt-4">
+        <div class="col-12 ">
+          <h5
+            class="col-md-12 mb-1"
+            style="font-size: 15px;text-align: right;margin-right: 10px;"
+          >
+            סמן את המשבצת לשימוש בשירות הרצוי*
+          </h5>
+
+          <div class="row">
+            <div class="col-md-12 mb-1 marg-top-10">
+              <div
+                class="card "
+                style="height: 100%;margin-left: 10px;margin-right: 10px;"
+                dir="rtl"
+              >
+                <div
+                  class="card-body d-flex flex-column"
+                  style="text-align: right;"
+                >
+                  <div class="card-title">
+                    <h6>תזכורת לחייב</h6>
+                    <div style="margin-right: 15px;">
+                      <img
+                        src="../../../assets/example.png"
+                        alt="Example"
+                        style="width: 20px; height: 20px; cursor: pointer;"
+                        (click)="ShowReminderExample()"
+                      />
+                      <span
+                        class="example-text"
+                        (click)="ShowReminderExample()"
+                      >
+                        דוגמה</span
+                      >
+                    </div>
+                  </div>
+
+                  <mat-checkbox
+                    [(ngModel)]="checkedReminderSms"
+                    [disabled]="checkedText"
+                    labelPosition="after"
+                    style="margin-right: 10px;margin-top: 5px;"
+                  >
+                    שליחת סמס תזכורת לחייב
+                  </mat-checkbox>
+                  <mat-checkbox
+                    [(ngModel)]="checkedReminderEmail"
+                    [disabled]="checkedText"
+                    labelPosition="after"
+                    style="margin-right: 10px;margin-top: 5px;"
+                  >
+                    שליחת אימייל תזכורת לחייב
+                  </mat-checkbox>
+                  <div *ngIf="checkedReminderSms || checkedReminderEmail">
+                    <mat-checkbox
+                      [(ngModel)]="checkedText"
+                      labelPosition="after"
+                      style="margin-right: 20px;margin-top: 10px;"
+                    >
+                      כתוב טקסט חופשי
+                    </mat-checkbox>
+                  </div>
+                  <div *ngIf="checkedReminderSms || checkedReminderEmail">
+                    <mat-form-field class="w-100">
+                      <input
+                        matInput
+                        [matDatepicker]="picker"
+                        placeholder=" הזן יום לתשלום החוב"
+                        [(ngModel)]="remainderDate"
+                        name="remainderDate"
+                      />
+                      <mat-datepicker-toggle
+                        matSuffix
+                        [for]="picker"
+                      ></mat-datepicker-toggle>
+                      <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
+                    <div
+                      class="comment-text"
+                      *ngIf="!remainderDate"
+                      style="color:red;"
+                    >
+                      *יום לתשלום החוב
+                    </div>
+                  </div>
+                  <div *ngIf="checkedText">
+                    <textarea
+                      pInputTextarea
+                      [(ngModel)]="self_text"
+                      [rows]="3"
+                      [cols]="30"
+                      autoResize="autoResize"
+                      style="width: 100%;"
+                    ></textarea>
+                  </div>
+                </div>
+
+                <div
+                  class="card-body d-flex flex-column"
+                  style="text-align: right;"
+                >
+                  <div class="card-title">
+                    <h6>אימייל או סמס מעורך דין</h6>
+                    <div>
+                      <img
+                        src="../../../assets/example.png"
+                        alt="Example"
+                        style="width: 20px; height: 20px;cursor: pointer;"
+                        (click)="ShowSmsExample()"
+                      />
+                      <span class="example-text" (click)="ShowSmsExample()">
+                        דוגמה</span
+                      >
+                    </div>
+                  </div>
+                  <mat-checkbox
+                    [(ngModel)]="checkedEmail"
+                    (change)="addEmailService()"
+                    labelPosition="after"
+                    style="margin-right: 10px;margin-top: 5px;"
+                  >
+                    שליחת אימייל מעורך דין
+                  </mat-checkbox>
+                  <mat-checkbox
+                    [(ngModel)]="checkedSms"
+                    (change)="addSmsService()"
+                    labelPosition="after"
+                    style="margin-right: 10px;margin-top: 5px;"
+                  >
+                    שליחת סמס מעורך דין
+                  </mat-checkbox>
+                </div>
+
+                <div
+                  class="card-body d-flex flex-column"
+                  style="text-align: right;"
+                >
+                  <div class="card-title">
+                    <h6>מגבירים לחץ</h6>
+                    <div>
+                      <img
+                        src="../../../assets/example.png"
+                        alt="Example"
+                        style="width: 20px; height: 20px;cursor: pointer;"
+                        (click)="ShowMihtavExample()"
+                      />
+                      <span class="example-text" (click)="ShowMihtavExample()">
+                        דוגמה</span
+                      >
+                    </div>
+                  </div>
+                  <mat-checkbox
+                    [(ngModel)]="checkedMail"
+                    (change)="addMailService()"
+                    labelPosition="after"
+                    style="margin-right: 10px;margin-top: 5px;"
+                  >
+                    שליחת מכתב רשום
+                  </mat-checkbox>
+                  <mat-checkbox
+                    [(ngModel)]="checkedCall"
+                    (change)="addCallService()"
+                    labelPosition="after"
+                    style="margin-right: 10px;margin-top: 5px;"
+                  >
+                    שיחה טלפונית מחברת גבייה
+                  </mat-checkbox>
+                  <div *ngIf="checkedCall">
+                    <mat-checkbox
+                      [(ngModel)]="add_gviya_comment"
+                      labelPosition="after"
+                      style="margin-right: 30px;margin-top: 5px;"
+                    >
+                      הוסך הערה לחברת הגבייה
+                    </mat-checkbox>
+
+                    <div *ngIf="add_gviya_comment">
+                      <textarea
+                        pInputTextarea
+                        [(ngModel)]="gviya_comment_text"
+                        [rows]="3"
+                        [cols]="30"
+                        autoResize="autoResize"
+                        style="width: 100%;"
+                      ></textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p-confirmDialog
+    header="Confirmation"
+    icon="pi pi-exclamation-triangle"
+  ></p-confirmDialog>
+
+  <p-dialog
+    header="סטטוס"
+    [(visible)]="good_display"
+    [modal]="true"
+    [style]="{ width: '400px', minWidth: '200px' }"
+    [minY]="70"
+    [maximizable]="true"
+    [baseZIndex]="10000"
+  >
+    <p style="color: green;">{{ success_display }}</p>
+    <p-footer>
+      <button
+        type="button"
+        pButton
+        icon="pi pi-check"
+        (click)="good_display = false"
+        label="אוקי"
+      ></button>
+    </p-footer>
+  </p-dialog>
+
+  <p-dialog
+    header="אימייל מעורך דין לדוגמה"
+    [(visible)]="email_exampel"
+    [modal]="true"
+    [style]="{ width: '400px', minWidth: '200px' }"
+    [minY]="70"
+    [maximizable]="true"
+    [baseZIndex]="10000"
+  >
+    <img src="../../../assets/emailexample.png" alt="example" />
+    <p-footer>
+      <button
+        type="button"
+        pButton
+        icon="pi pi-check"
+        (click)="email_exampel = false"
+        label="אוקי"
+      ></button>
+    </p-footer>
+  </p-dialog>
+
+  <p-dialog
+    header="סמס מעורך דין לדוגמה"
+    [(visible)]="sms_exampel"
+    [modal]="true"
+    [style]="{ width: '400px', minWidth: '200px' }"
+    [minY]="70"
+    [maximizable]="true"
+    [baseZIndex]="10000"
+  >
+    <img src="../../../assets/smsexample.png" alt="example" />
+    <p-footer>
+      <button
+        type="button"
+        pButton
+        icon="pi pi-check"
+        (click)="sms_exampel = false"
+        label="אוקי"
+      ></button>
+    </p-footer>
+  </p-dialog>
+
+  <p-dialog
+    header="מכתב רשום מעורך דין לדוגמה"
+    [(visible)]="mihtav_exampel"
+    [modal]="true"
+    [style]="{ width: '400px', minWidth: '200px', height: '100%' }"
+    [blockScroll]="true"
+    [minY]="70"
+    [maximizable]="true"
+    [baseZIndex]="10000"
+  >
+    <img src="../../../assets/mihtavExample.png" alt="example" />
+    <p-footer>
+      <button
+        type="button"
+        pButton
+        icon="pi pi-check"
+        (click)="mihtav_exampel = false"
+        label="אוקי"
+      ></button>
+    </p-footer>
+  </p-dialog>
+
+  <p-dialog
+    header="תזכורת באמצעות סמס לדוגמה"
+    [(visible)]="remainder_exampel"
+    [modal]="true"
+    [style]="{ width: '400px', minWidth: '200px' }"
+    [minY]="70"
+    [maximizable]="true"
+    [baseZIndex]="10000"
+  >
+    <img src="../../../assets/remainderexample.png" alt="example" />
+    <p-footer>
+      <button
+        type="button"
+        pButton
+        icon="pi pi-check"
+        (click)="remainder_exampel = false"
+        label="אוקי"
+      ></button>
+    </p-footer>
+  </p-dialog>
+
+  <p-dialog
+    header="משהו השתבש"
+    [(visible)]="error_disp"
+    [modal]="true"
+    [style]="{ width: '350px', minWidth: '200px' }"
+    [minY]="70"
+    [maximizable]="true"
+    [baseZIndex]="10000"
+  >
+    <p style="color: red;">{{ error_text }}</p>
+    <p-footer>
+      <button
+        type="button"
+        pButton
+        icon="pi pi-check"
+        (click)="CloseErrorDialog()"
+        label="אוקי"
+      ></button>
+    </p-footer>
+  </p-dialog>
+</div>

@@ -1,0 +1,47 @@
+mat-toolbar{
+    display: flex;
+    flex-direction: column;
+
+    justify-content: center;
+    align-items:center;
+    height: 100%;
+}
+
+.header-text{
+    display: flex;
+    flex-direction: column;
+
+    justify-content: center;
+    align-items:center;
+    margin-top: 10px;
+}
+
+.terms-check{
+    margin: 8px 0px 20px 0px ;
+    line-height: 24px;
+    vertical-align: top;
+    margin-right: 4px;
+    font-size: 0.9em;
+
+    a{
+        color: rgb(29, 29, 255);
+        text-decoration: underline;
+    }
+}
+
+.container{
+    margin-bottom: 20px;
+}
+
+.terms-link{
+    cursor: pointer;
+}
+
+.card-data{
+    background-color: #ececec;
+    margin: 15px 15px 30px 15px;
+    border-radius: 5px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+}
+
