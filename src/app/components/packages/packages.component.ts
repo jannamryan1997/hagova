@@ -3,6 +3,8 @@ import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
 import { Router } from '@angular/router';
 import { AngularFireFunctions } from '@angular/fire/functions';
+import { PaymentData } from 'src/app/models/paymentmodel';
+import { SendCommandService } from 'src/app/services/send-command.service';
 @Component({
   selector: 'app-packages',
   templateUrl: './packages.component.html',
@@ -19,7 +21,9 @@ export class PackagesComponent implements OnInit {
   constructor(
     private auth: AuthService, 
     private router:Router,
-    private fun: AngularFireFunctions,
+	private fun: AngularFireFunctions,
+	private sendService: SendCommandService
+
   ) { }
 
   ngOnInit() {
@@ -51,23 +55,13 @@ export class PackagesComponent implements OnInit {
   // }
 
   public sendPayment(sum:number):boolean{
-    const callable = this.fun.httpsCallable('genericEmail');
-
-    callable({ 
-      FullName:"karine karapeyan",
-      Email:"jannamryan8@gmail.com",
-      Phone:	"+37494858585",
-      Sum:sum
-    }).toPromise().then((data)=>{
-      console.log("mail ok");
-      console.log(data);
-      
-    }).catch((err)=>{
-      console.log(err);
-      return false;
-    })
-
-    return true;
+	const data:PaymentData = { 
+		FullName:"karine karapeyan",
+		Email:"jannamryan8@gmail.com",
+		Phone:	"+37494858585",
+		Sum:sum
+	  }
+	return this.sendService.SendPayment(data)
   }
 
   ShowErrorDialog(text:string){

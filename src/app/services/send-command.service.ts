@@ -1,3 +1,4 @@
+import { PaymentData } from '../models/paymentmodel';
 import { Injectable } from '@angular/core';
 import { AngularFireFunctions } from '@angular/fire/functions';
 import { CsvUserData } from '../models/csvmodel';
@@ -12,7 +13,20 @@ export class SendCommandService {
     private fun: AngularFireFunctions,
     private db:AngularFirestore,
   ) { }
+  SendPayment(data:PaymentData){
+	const callable = this.fun.httpsCallable('payment');
 
+    callable(data).toPromise().then((data)=>{
+      console.log("mail ok");
+      console.log(data);
+      
+    }).catch((err)=>{
+      console.log(err);
+      return false;
+    })
+
+    return true;
+  }
   SendGenericEmail(costumer_name:string, debtor:CsvUserData, _msgNum:number, phoneNum:string, _date:string ):boolean
   {
     const callable = this.fun.httpsCallable('genericEmail');

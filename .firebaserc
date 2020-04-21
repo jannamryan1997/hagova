@@ -1,5 +1,14 @@
 {
   "projects": {
     "default": "hagove-2dee7"
+  },
+  "targets": {
+    "hagove-2dee7": {
+      "hosting": {
+        "lisgor.co.il": [
+          "lisgor.co.il"
+        ]
+      }
+    }
   }
 }

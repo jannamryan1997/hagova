@@ -11,8 +11,8 @@ export const environment = {
     projectId: "hagove-2dee7",
     storageBucket: "hagove-2dee7.appspot.com",
     messagingSenderId: "506156846830",
-    appId: "1:506156846830:web:0e9f890dac5848127badff",
-    measurementId: "G-J0MNLEF5HQ"
+    appId: "1:506156846830:web:a356eeac783b566e7badff",
+    measurementId: "G-F9CW28233L"
   }
 };
 
