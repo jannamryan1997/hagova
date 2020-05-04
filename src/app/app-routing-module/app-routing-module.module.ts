@@ -10,6 +10,8 @@ import { ForgotPasswordComponent } from '../components/forgot-password/forgot-pa
 import { MyAccountComponent } from '../components/my-account/my-account.component';
 import { PackagesComponent } from '../components/packages/packages.component';
 import { AboutComponent } from '../components/about/about.component';
+import { PaymentComponent } from '../components/payment/payment.component';
+import { DebtComponent } from '../components/debt/debt.component';
 
 const routes: Routes = [
   {
@@ -43,6 +45,14 @@ const routes: Routes = [
   {
     path: 'about',
     component: AboutComponent
+  },
+  {
+    path: 'payment',
+    component: PaymentComponent
+  },
+  {
+    path: 'debt',
+    component: DebtComponent
   },
   {
     path: '',

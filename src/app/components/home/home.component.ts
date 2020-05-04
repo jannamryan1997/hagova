@@ -117,7 +117,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   choosePackage() {
     this.router.navigate(["/packages"]);
   }
-
+  chooseDebt() {
+    this.router.navigate(["/debt"]);
+  }
   sendLetter(frm) {
     console.log(frm);
     this.user_data.firstName = frm.value.firstName;

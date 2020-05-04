@@ -22,44 +22,54 @@ sgMail.setApiKey(API_KEY);
 
 // Sends Payment
 export const payment = functions.https.onCall(async (data, context) => {
-	await lonig
-	const args = {
-		UserEmail: "sample@gmail.com",
-		UserPassword: "123456",
-		FullName: "Rahul Singh",
-		Email: "sample@gmail.com",
-		Phone: "123456789",
-		Sum: 10.00,
-		PaymentsNum: 1,
-		Description: "TEST PURCHASE",
-		Type: 2,
-		ReturnUrl: "http://localhost:4200/api/geturl"
+	
+	const request = {
+		fullName: "Rahul Singh",
+		phone: "123456789",
+		email: "aghasi89@gmail.com",
+		sum: data.Sum,
+		description: "TEST PURCHASE",
+		type: 2,
+		paymentsNum: 1,
+		userEmail: "test@test.com",
+		userPassword: "123456",
+		returnUrl: "http://localhost:4200/api/geturl"
 	};
-	const result = await doPay(args);
+	const result = await doPay(request);
 
-	return { success: true, result,args };
+	return { success: true, result};
 })
-const doPay = (data:any):Promise<any> => {
+const doPay = (request:any):Promise<any> => {
 	return new Promise((resolve, reject) => {
 		/*Local constible */
-		const url = 'https://privateqa.invoice4u.co.il/Services/MeshulamService.svc?singleWsdl';
-		const soapHeader = ''//xml string for header
-
-		/*using Soap CLient*/
-		soap.createClient(url, function (_:any, client1:any) {
-			client1.addSoapHeader(soapHeader);
-			/*Start LoginFunctions*/
-				client1.ProccessRequest(data, function (err:any, result:any) {
-					if (err) {
-						reject(err);
-					}
-					resolve({result,data,err})
-	
-				});
+		soap.createClient('https://privateqa.invoice4u.co.il/Services/ApiService.svc?singleWsdl',(err:any,soapLogin)=>{
+		
+		if(err){
+				console.log(err);
+			}
+			if(soapLogin){
+				var args = {
+					email: "test@test.com",
+					password: "123456"
+					};
+		soapLogin.VerifyLogin(args,(loginError:any,Loginresponse:any)=>{
+			if(loginError){
+				console.log(loginError);
+			}
+			console.log(Loginresponse);
 			
+			soapLogin.ProcessRequestFullContentsREST(request,(reqError:any, paymantResponse:any)=>{
+				if(reqError){
+					console.log(reqError);
+				}
+				resolve(paymantResponse.ProcessRequestFullContentsRESTResult);
+				
+			})
 			
-		}
-		);
+		})			
+				
+			}
+		})
 	})
 }
 
@@ -182,3 +192,4 @@ export const sendMihtavBClickMail = functions.https.onCall(async (data, context)
 	// Response must be JSON serializable
 	return { success: true };
 });
+

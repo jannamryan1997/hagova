@@ -18,7 +18,7 @@ import { AppRoutingModuleModule } from "./app-routing-module/app-routing-module.
 //material modules
 import { MaterialModule } from "./material/material.module";
 import { PrimengModule } from "./primeng/primeng.module";
-
+import { NgxPayPalModule } from "ngx-paypal";
 //firebase
 import { AngularFireModule } from "@angular/fire";
 import { environment } from "src/environments/environment";
@@ -30,6 +30,8 @@ import { MyAccountComponent } from "./components/my-account/my-account.component
 import { PackagesComponent } from "./components/packages/packages.component";
 import { MAT_DATE_LOCALE } from "@angular/material";
 import { AboutComponent } from "./components/about/about.component";
+import { PaymentComponent } from './components/payment/payment.component';
+import { DebtComponent } from './components/debt/debt.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +44,10 @@ import { AboutComponent } from "./components/about/about.component";
     ForgotPasswordComponent,
     MyAccountComponent,
     PackagesComponent,
-    AboutComponent
+	AboutComponent,
+	PaymentComponent,
+    DebtComponent
+	
   ],
   imports: [
     BrowserModule,
@@ -56,7 +61,8 @@ import { AboutComponent } from "./components/about/about.component";
     BrowserAnimationsModule,
     PrimengModule,
     HttpClientModule,
-    AngularFireFunctionsModule
+	AngularFireFunctionsModule,
+	NgxPayPalModule
   ],
   providers: [{ provide: MAT_DATE_LOCALE, useValue: "en-GB" }],
   bootstrap: [AppComponent]

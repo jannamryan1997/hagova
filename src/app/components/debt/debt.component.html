@@ -1,0 +1,129 @@
+<mat-toolbar color="primary">
+	<app-logo></app-logo>
+	<mat-toolbar-row class="header-raw">
+		<div class="registration-button">
+			<button class="btn" style="margin-right: 15px;">
+				חוב
+			</button>
+			<button class="btn" (click)="choosePackage()" style="margin-right: 15px;">
+				הנחה
+			</button>
+			<button class="btn" (click)="about()" style="margin-right: 15px;">
+				אודות
+			</button>
+			<button class="btn " *ngIf="!user" style="margin-right: 15px;" (click)="register()">
+				הרשמה
+			</button>
+			<button class="btn" *ngIf="user" (click)="myAccount()" style="margin-right: 15px;">
+				החשבון שלי
+			</button>
+			<button class="btn" *ngIf="user" (click)="logout()">יציאה</button>
+			<button class="btn" *ngIf="!user" (click)="login()">כניסה</button>
+		</div>
+	</mat-toolbar-row>
+</mat-toolbar>
+<div class="details" *ngIf="user">
+	<!-- spacer -->
+	<div></div>
+	<!-- end spacer -->
+	<div class="details-user">
+		<span class="hello-user">שלום:</span> {{ user?.displayName }}
+	</div>
+</div>
+<hr />
+<div class="details" *ngIf="user">
+	<!-- spacer -->
+	<div></div>
+	<!-- end spacer -->
+	<div class="details-user">
+		<span class="hello-user" style="margin-right: 5px;">מיילים:</span>{{ _emails }}
+		<span class="hello-user" style="margin-right: 5px;">סמסים:</span>{{ _sms }}
+		<span class="hello-user" style="margin-right: 5px;">דואר רשום:</span>{{ _mails }}
+	</div>
+</div>
+
+<div class="main-content">
+	<div class="crad col-6">
+		<div class="container" style="height: 100%;">
+			<div class="card-header-text ">
+				<span></span>
+				<span class="marg-top-10">פרטי החייב</span>
+			</div>
+			<hr />
+			<div class="row mt-4">
+				<div class="col-12 ">
+					<form #userOwesData="ngForm" >
+						<div class="row" *ngIf="_error != ''">
+							<div class="col-12 alert alert-danger">{{ _error }}</div>
+						</div>
+						<div class="row">
+							<div class="col-md-12 mb-2 marg-top-10">
+								<label for="debtName">א. שם החייב</label>
+								<input [(ngModel)]="debtName" #debtNameControl="ngModel" name="debtName" type="text"
+									class="form-control" id="debtName" required />
+								<div class="comment-text" *ngIf="!debtNameControl.valid">
+									נדרש<span class="must-filed">*</span>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-12 mb-2 marg-top-10">
+								<label for="pasportNumber">ב. ת.ז. חייב</label>
+								<input [(ngModel)]="pasportNumber" #pasportNumberControl="ngModel" name="pasportNumber"
+									type="text" class="form-control" id="pasportNumber" required />
+									<div class="comment-text" *ngIf="!pasportNumberControl.valid">
+										נדרש<span class="must-filed">*</span>
+									</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-12 mb-2 marg-top-10">
+								<label for="creditName">ג. למי חייב</label>
+								<input [(ngModel)]="creditName" #creditNameControl="ngModel" name="creditName" type="text"
+									class="form-control" id="creditName" required />
+									<div class="comment-text" *ngIf="!creditNameControl.valid">
+										נדרש<span class="must-filed">*</span>
+									</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-12 mb-2 marg-top-10">
+								<label for="debtNumber">ד. מס' הזמנה</label>
+								<input [(ngModel)]="debtNumber" #debtNumberControl="ngModel" name="debtNumber" type="text"
+									class="form-control" id="debtNumber" required />
+									<div class="comment-text" *ngIf="!debtNumberControl.valid">
+										נדרש<span class="must-filed">*</span>
+									</div>
+							</div>
+						</div>
+						<div class="row marg-top-10">
+							<div class="col-md-12 mb-2">
+								<label for="debtSum"> סכום החוב</label>
+								<div style="display: flex; flex-direction: row;">
+									<input [(ngModel)]="debtSum" #debtSumControl="ngModel" placeholder="שקלים"
+										name="debtSum" type="text" class="form-control" id="debtSum" required />
+									<input [(ngModel)]="debtSumAgorot" name="debtSumAgorot" placeholder="אגורות"
+										style="width:80px; margin-left: 15px;" type="text" class="form-control"
+										id="debtSumAgorot" />
+								</div>
+
+								<div class="comment-text" *ngIf="!debtSumControl.valid">
+									סכום החוב של החייב בשקלים<span class="must-filed">*</span>
+								</div>
+							</div>
+						</div>
+
+						<div>
+							<div class="row sub-button">
+								<div class="col-md-12">
+									<button type="button" pButton style="margin-left: 10px;" type="submit"  label="Meshulam" class="ui-button-success" (click)='meshulam()'></button>
+									<ngx-paypal [config]="payPalConfig"></ngx-paypal>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
