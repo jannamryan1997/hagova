@@ -12,6 +12,7 @@ import { PackagesComponent } from '../components/packages/packages.component';
 import { AboutComponent } from '../components/about/about.component';
 import { PaymentComponent } from '../components/payment/payment.component';
 import { DebtComponent } from '../components/debt/debt.component';
+import { PayPalComponent } from '../components/payPal/payPal.component';
 
 const routes: Routes = [
   {
@@ -54,6 +55,11 @@ const routes: Routes = [
     path: 'debt',
     component: DebtComponent
   },
+  {
+    path:"pay",
+    component:PayPalComponent
+  },
+
   {
     path: '',
     redirectTo: '/home',

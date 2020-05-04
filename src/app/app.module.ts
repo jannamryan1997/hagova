@@ -32,6 +32,7 @@ import { MAT_DATE_LOCALE } from "@angular/material";
 import { AboutComponent } from "./components/about/about.component";
 import { PaymentComponent } from './components/payment/payment.component';
 import { DebtComponent } from './components/debt/debt.component';
+import { PayPalComponent } from './components/payPal/payPal.component';
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import { DebtComponent } from './components/debt/debt.component';
     PackagesComponent,
 	AboutComponent,
 	PaymentComponent,
-    DebtComponent
+    DebtComponent,
+    PayPalComponent
 	
   ],
   imports: [

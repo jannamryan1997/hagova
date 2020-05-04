@@ -1,0 +1,77 @@
+.main-content {
+    width: 100%;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    margin: auto;
+    height: 100%;
+  }
+  .col-in-main {
+    flex: 1;
+  }
+  
+  ::ng-deep p-dialog .ui-dialog {
+    overflow: scroll;
+    max-height: 100%;
+  }
+  
+  @media screen and (max-width: 900px) {
+    .main-content {
+      display: flex;
+      flex-direction: column-reverse;
+    }
+  }
+  
+  .header-raw {
+    display: flex;
+    flex-direction: row;
+  
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .registration-button {
+    .btn {
+      color: white;
+    }
+    .btn:hover {
+      color: rgb(0, 0, 0);
+    }
+  }
+  .hello-user {
+    margin-left: 3px;
+  }
+  .details {
+    width: 100%;
+    color: white;
+    background: #334294;
+    height: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .details-user {
+    margin-right: 5px;
+  }
+  .btn_second {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+    width: 100%;
+  }
+  h6 {
+    margin-top: 7px;
+  }
+  .crad {
+    background-color: #ececec;
+    margin: 15px 15px 30px 15px;
+    border-radius: 5px;
+    padding-bottom: 1em;
+  }
+ 
+  .text{
+    font-size:20px;
+    padding: 15px 0;
+  }
