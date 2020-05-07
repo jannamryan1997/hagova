@@ -1,6 +1,6 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
-import paypal from 'paypal-rest-sdk';
+import  * as paypal from 'paypal-rest-sdk';
 import * as soap from "soap";
 admin.initializeApp();
 
@@ -23,15 +23,15 @@ sgMail.setApiKey(API_KEY);
 
 paypal.configure({
 	'mode': 'sandbox', //sandbox or live
-	'client_id': 'EBWKjlELKMYqRNQ6sYvFo64FtaRLRR5BdHEESmha49TM',
-	'client_secret': 'EO422dn3gQLgDbuwqTjzrFgFtaRLRR5BdHEESmha49TM'
+	'client_id': 'ASSENB6F9U3AeN8A0wvcBQM1HIClff7BOgURQ-bZntocZxgoE6RR5FFp8T2jAXO6LZnP6F9Pukmn1b-K',
+	'client_secret': 'EORDzAubIjBLG2xJWvkpVenkdNEVBwQcjVp6Go6JRRf8r5AJNFzQ8qXu1oZIhvu1qQI1OwGkl4LLqq3W'
 });
 
 
 
 exports.pay = functions.https.onRequest((req, res) => {
 	// 1.Set up a payment information object, Build PayPal payment request
-	const payReq = JSON.stringify({
+	const payReq:any = JSON.stringify({
 		intent: 'sale',
 		payer: {
 			payment_method: 'paypal'
@@ -55,14 +55,14 @@ exports.pay = functions.https.onRequest((req, res) => {
 		}]
 	});
 	// 2.Initialize the payment and redirect the user.
-	paypal.payment.create(payReq, (error:any, payment:any) => {
+	paypal.payment.create(payReq, (error:any, payment_2:any) => {
 		const links:any = {};
 		if (error) {
 			console.error(error);
 			res.status(500).end();
 		} else {
 			// Capture HATEOAS links
-			payment.links.forEach((linkObj:any) => {
+			payment_2.links.forEach((linkObj:any) => {
 				links[linkObj.rel] = {
 					href: linkObj.href,
 					method: linkObj.method
@@ -88,17 +88,18 @@ exports.process = functions.https.onRequest(async (req, res) => {
 	const payerId = {
 		payer_id: req.query.PayerID
 	};
-	const r = await paypal.payment.execute(paymentId, payerId, (error:any, payment:any) => {
+	return await paypal.payment.execute(paymentId, payerId, (error:any, payment_1:any) => {
 		if (error) {
 			console.error(error);
 			res.redirect(`${req.protocol}://${req.get('host')}/error`); // replace with your url page error
+			return
 		} else {
-			if (payment.state === 'approved') {
-				console.info('payment completed successfully, description: ', payment.transactions[0].description);
+			if (payment_1.state === 'approved') {
+				console.info('payment completed successfully, description: ', payment_1.transactions[0].description);
 				// console.info('req.custom: : ', payment.transactions[0].custom);
 				// set paid status to True in RealTime Database
 				const date = Date.now();
-				const uid = payment.transactions[0].description;
+				const uid = payment_1.transactions[0].description;
 				const ref = admin.database().ref('users/' + uid + '/');
 				ref.push({
 					'paid': true,
@@ -106,14 +107,16 @@ exports.process = functions.https.onRequest(async (req, res) => {
 					'date': date
 				})
 				res.redirect(`${req.protocol}://${req.get('host')}/success`); // replace with your url, page success
+				return
 			} else {
 				console.warn('payment.state: not approved ?');
 				// replace debug url
 				res.redirect(`https://console.firebase.google.com/project/${process.env.GCLOUD_PROJECT}/functions/logs?search=&severity=DEBUG`);
-			}
+				return
+		}
+		
 		}
 	});
-	console.info('promise: ', r);
 });
 
 
@@ -146,7 +149,7 @@ const doPay = (request: any): Promise<any> => {
 				console.log(err);
 			}
 			if (soapLogin) {
-				var args = {
+				const args = {
 					email: "test@test.com",
 					password: "123456"
 				};
