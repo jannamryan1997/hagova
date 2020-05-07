@@ -27,6 +27,7 @@
     "firebase": "^7.8.1",
     "hammerjs": "^2.0.8",
     "ngx-paypal": "^6.1.0",
+    "paypal-rest-sdk": "^1.8.1",
     "primeicons": "^2.0.0",
     "primeng": "^9.0.0-rc.4",
     "rxjs": "~6.4.0",
