@@ -1,6 +1,6 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
-import  * as paypal from 'paypal-rest-sdk';
+import * as paypal from 'paypal-rest-sdk';
 import * as soap from "soap";
 admin.initializeApp();
 
@@ -30,62 +30,67 @@ paypal.configure({
 
 
 exports.pay = functions.https.onCall(async (data, context) => {
-	// 1.Set up a payment information object, Build PayPal payment request
-	const payReq:any = JSON.stringify({
-		intent: 'sale',
-		payer: {
-			payment_method: 'paypal'
-		},
-		redirect_urls: {
-			return_url: `/process`,
-			cancel_url: `/cancel`
-		},
-		transactions: [{
-			amount: {
-				total: data.price,
-				currency: 'USD'
+	return new Promise((resolve, reject) => {
+
+		// 1.Set up a payment information object, Build PayPal payment request
+		const payReq: any = JSON.stringify({
+			intent: 'sale',
+			payer: {
+				payment_method: 'paypal'
 			},
-			// This is the payment transaction description. Maximum length: 127
-			description: data.uid, // req.body.id
-			// reference_id string .Optional. The merchant-provided ID for the purchase unit. Maximum length: 256.
-			// reference_id: req.body.uid,
-			custom: data.uid,
-			// soft_descriptor: req.body.uid
-			// "invoice_number": req.body.uid,A
-		}]
-	});
-	// 2.Initialize the payment and redirect the user.
-	paypal.payment.create(payReq, (error:any, payment_2:any) => {
-		const links:any = {};
-		if (error) {
-			console.error(error);
-			return {
-				status:500,
-				err:error
-			}
-		} else {
-			// Capture HATEOAS links
-			payment_2.links.forEach((linkObj:any) => {
-				links[linkObj.rel] = {
-					href: linkObj.href,
-					method: linkObj.method
-				};
-			});
-			// If redirect url present, redirect user
-			if (Object.prototype.hasOwnProperty.call(links, 'approval_url')) {
-				// REDIRECT USER TO links['approval_url'].href
-				console.info(links.approval_url.href);
-				// res.json({"approval_url":links.approval_url.href});
-				return ({href:links.approval_url.href});
+			redirect_urls: {
+				return_url: `/process`,
+				cancel_url: `/cancel`
+			},
+			transactions: [{
+				amount: {
+					total: data.price,
+					currency: 'ILS'
+				},
+				// This is the payment transaction description. Maximum length: 127
+				description: data.uid, // req.body.id
+				// reference_id string .Optional. The merchant-provided ID for the purchase unit. Maximum length: 256.
+				// reference_id: req.body.uid,
+				custom: data.uid,
+				// soft_descriptor: req.body.uid
+				// "invoice_number": req.body.uid,A
+			}]
+		});
+		// 2.Initialize the payment and redirect the user.
+		paypal.payment.create(payReq, (error: any, payment_2: any) => {
+			const links: any = {};
+			if (error) {
+				console.error(error);
+				reject({
+					status: 500,
+					err: error
+				})
 			} else {
-				console.error('no redirect URI present');
-				return {
-					status:500,
-					err:true
+				// Capture HATEOAS links
+				payment_2.links.forEach((linkObj: any) => {
+					links[linkObj.rel] = {
+						href: linkObj.href,
+						method: linkObj.method
+					};
+				});
+				// If redirect url present, redirect user
+				if (Object.prototype.hasOwnProperty.call(links, 'approval_url')) {
+					// REDIRECT USER TO links['approval_url'].href
+					console.info(links.approval_url.href);
+					// res.json({"approval_url":links.approval_url.href});
+
+					resolve({ success: true,  href: links.approval_url.href });
+
+				} else {
+					console.error('no redirect URI present');
+					reject({
+						status: 500,
+						err: true
+					})
 				}
 			}
-		}
-	});
+		});
+	})
 });
 
 // 3.Complete the payment. Use the payer and payment IDs provided in the query string following the redirect.
@@ -94,7 +99,7 @@ exports.process = functions.https.onRequest(async (req, res) => {
 	const payerId = {
 		payer_id: req.query.PayerID
 	};
-	await paypal.payment.execute(paymentId, payerId, (error:any, payment_1:any) => {
+	await paypal.payment.execute(paymentId, payerId, (error: any, payment_1: any) => {
 		if (error) {
 			console.error(error);
 			res.redirect(`${req.protocol}://${req.get('host')}/error`); // replace with your url page error
@@ -119,8 +124,8 @@ exports.process = functions.https.onRequest(async (req, res) => {
 				// replace debug url
 				res.redirect(`https://console.firebase.google.com/project/${process.env.GCLOUD_PROJECT}/functions/logs?search=&severity=DEBUG`);
 				return
-		}
-		
+			}
+
 		}
 	});
 });
