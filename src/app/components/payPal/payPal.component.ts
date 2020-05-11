@@ -4,6 +4,7 @@ import { ICreateOrderRequest } from 'ngx-paypal';
 import { SendCommandService } from "src/app/services/send-command.service";
 import { Router, ActivatedRoute } from '@angular/router';
 import { PaymentData } from 'src/app/models/paymentmodel';
+import { AngularFireFunctions } from '@angular/fire/functions';
 @Component({
     selector: "app-payPal",
     templateUrl: "payPal.component.html",
@@ -12,12 +13,15 @@ import { PaymentData } from 'src/app/models/paymentmodel';
 
 export class PayPalComponent implements OnInit {
     public payPalConfig;
+  
+ 
 
     public email: "1";
     public fullName: "fdfdfd";
     public phone: "2";
     public sum: "44444444.01";
     constructor(
+        private fun: AngularFireFunctions,
         private _auth: AuthService,
         private sendService: SendCommandService,
         private _router: Router,
@@ -34,7 +38,7 @@ export class PayPalComponent implements OnInit {
     }
 
     ngOnInit() {
-        this._initConfig()
+       this._initConfig()
     }
     public logout(): void {
         this._auth.logout();
@@ -58,10 +62,14 @@ export class PayPalComponent implements OnInit {
 
 
     private _initConfig(): void {
+    
+        
         this.payPalConfig = {
             currency: 'EUR',
             clientId: 'sb',
             createOrder: (data) => <ICreateOrderRequest>{
+                
+            
                 intent: 'CAPTURE',
                 purchase_units: [{
                     amount: {
@@ -94,6 +102,8 @@ export class PayPalComponent implements OnInit {
             },
             onApprove: (data, actions) => {
                 console.log('onApprove - transaction was approved, but not authorized', data, actions);
+                console.log(data,"data");
+                
                 actions.order.get().then(details => {
                     console.log('onApprove - you can get full order details inside onApprove: ', details);
                 });
@@ -113,10 +123,37 @@ export class PayPalComponent implements OnInit {
                 //	this.showError = true;
             },
             onClick: (data, actions) => {
+                console.log("hhhhhhh");
                 console.log('onClick', data, actions);
                 //	this.resetStatus();
             },
         };
     }
 
+    public paypalClick():void{
+            // const callable = this.fun.httpsCallable('pay');
+            // callable({ 
+            //   price:15,
+            //   uid:155, 
+        
+            // }).toPromise().then((result)=>{
+            //   console.log("mail ok",result);
+            // }).catch((err)=>{
+            //   console.log(err);
+            //   return false;
+            // })
+        
+            const data: any = {
+                price:15,
+                uid:155
+            }
+            this.sendService.SendPay(data).then((res: any) => {
+                console.log(res);
+                // if (res.success) {
+                //     this._router.navigate(["/payment"], { queryParams: { url: res.result.ClearingRedirectUrl } })
+                // }
+            })
+          
+          
+    }
 }

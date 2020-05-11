@@ -29,7 +29,7 @@ paypal.configure({
 
 
 
-exports.pay = functions.https.onRequest((req, res) => {
+exports.pay = functions.https.onCall(async (data, context) => {
 	// 1.Set up a payment information object, Build PayPal payment request
 	const payReq:any = JSON.stringify({
 		intent: 'sale',
@@ -37,19 +37,19 @@ exports.pay = functions.https.onRequest((req, res) => {
 			payment_method: 'paypal'
 		},
 		redirect_urls: {
-			return_url: `${req.protocol}://${req.get('host')}/process`,
-			cancel_url: `${req.protocol}://${req.get('host')}/cancel`
+			return_url: `/process`,
+			cancel_url: `/cancel`
 		},
 		transactions: [{
 			amount: {
-				total: req.body.price,
+				total: data.price,
 				currency: 'USD'
 			},
 			// This is the payment transaction description. Maximum length: 127
-			description: req.body.uid, // req.body.id
+			description: data.uid, // req.body.id
 			// reference_id string .Optional. The merchant-provided ID for the purchase unit. Maximum length: 256.
 			// reference_id: req.body.uid,
-			custom: req.body.uid,
+			custom: data.uid,
 			// soft_descriptor: req.body.uid
 			// "invoice_number": req.body.uid,A
 		}]
@@ -59,7 +59,10 @@ exports.pay = functions.https.onRequest((req, res) => {
 		const links:any = {};
 		if (error) {
 			console.error(error);
-			res.status(500).end();
+			return {
+				status:500,
+				err:error
+			}
 		} else {
 			// Capture HATEOAS links
 			payment_2.links.forEach((linkObj:any) => {
@@ -73,10 +76,13 @@ exports.pay = functions.https.onRequest((req, res) => {
 				// REDIRECT USER TO links['approval_url'].href
 				console.info(links.approval_url.href);
 				// res.json({"approval_url":links.approval_url.href});
-				res.status(200).json({href:links.approval_url.href});
+				return ({href:links.approval_url.href});
 			} else {
 				console.error('no redirect URI present');
-				res.status(500).end();
+				return {
+					status:500,
+					err:true
+				}
 			}
 		}
 	});

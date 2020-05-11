@@ -29,8 +29,12 @@
                 <div class="row sub-button">
                     <div class="col-md-12">
                         <button type="button" pButton style="margin: 10px;" type="submit"  label="Meshulam" class="ui-button-success" (click)='meshulam()'></button>
-                        <ngx-paypal [config]="payPalConfig"></ngx-paypal>
+						<!-- <ngx-paypal [config]="payPalConfig"></ngx-paypal> -->
+						<div class="paypal-button-container" (click)="paypalClick()">
+							<img src="assets/paypal.png" class="pay-image">
+						</div>
                     </div>
                 </div>
 	</div>
 </div>
+

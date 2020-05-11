@@ -18,6 +18,12 @@ export class SendCommandService {
     const res = await callable(data).toPromise()
     return res;
   }
+
+  async SendPay(data:any):Promise<any> {
+    const callable = this.fun.httpsCallable('pay');
+      const res = await callable(data).toPromise()
+      return res;
+    }
   SendGenericEmail(costumer_name:string, debtor:CsvUserData, _msgNum:number, phoneNum:string, _date:string ):boolean
   {
     const callable = this.fun.httpsCallable('genericEmail');
