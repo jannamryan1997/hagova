@@ -73,7 +73,7 @@ exports.pay = functions.https.onRequest((req, res) => {
 				// REDIRECT USER TO links['approval_url'].href
 				console.info(links.approval_url.href);
 				// res.json({"approval_url":links.approval_url.href});
-				res.redirect(302, links.approval_url.href);
+				res.status(200).json({href:links.approval_url.href});
 			} else {
 				console.error('no redirect URI present');
 				res.status(500).end();
