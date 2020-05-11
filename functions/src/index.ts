@@ -49,7 +49,7 @@ exports.pay = functions.https.onCall(async (data, context) => {
 			description: data.uid, // req.body.id
 			// reference_id string .Optional. The merchant-provided ID for the purchase unit. Maximum length: 256.
 			// reference_id: req.body.uid,
-			custom: data.uid,
+			custom: data.uid,//uid
 			// soft_descriptor: req.body.uid
 			// "invoice_number": req.body.uid,A
 		}]
@@ -76,7 +76,7 @@ exports.pay = functions.https.onCall(async (data, context) => {
 				// REDIRECT USER TO links['approval_url'].href
 				console.info(links.approval_url.href);
 				// res.json({"approval_url":links.approval_url.href});
-				return ({href:links.approval_url.href});
+				return {href:links.approval_url.href};
 			} else {
 				console.error('no redirect URI present');
 				return {

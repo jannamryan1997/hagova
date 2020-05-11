@@ -13,6 +13,7 @@ import { AboutComponent } from '../components/about/about.component';
 import { PaymentComponent } from '../components/payment/payment.component';
 import { DebtComponent } from '../components/debt/debt.component';
 import { PayPalComponent } from '../components/payPal/payPal.component';
+import { SuccessGuard } from '../guard/success.guard';
 
 const routes: Routes = [
   {
@@ -49,7 +50,8 @@ const routes: Routes = [
   },
   {
     path: 'payment',
-    component: PaymentComponent
+    component: PaymentComponent,
+    // canActivate:[SuccessGuard]
   },
   {
     path: 'debt',
