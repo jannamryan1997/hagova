@@ -1,6 +1,6 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
-import  * as paypal from 'paypal-rest-sdk';
+import * as paypal from 'paypal-rest-sdk';
 import * as soap from "soap";
 admin.initializeApp();
 
@@ -31,10 +31,10 @@ export const pay = functions.https.onRequest((req, res) => {
 		'client_id': 'AaU8tQfmz1_MFDTKuf84yYERXvdDt2ZFJVrxhNW_49DazF4A_F0VBuKyV5_nntyEdZqUa5Oq9ZBj65GV',
 		'client_secret': 'EAZ8aFDU4lHHLy1bQqULYWqznf3dBknXZW3AH__zFC0bUs8AGUyR6RNbm-jHvqtikX7PsSqMO5vxuvKm'
 	});
-	
-	console.log(paypal,'---------------',testSTring)
+
+	console.log(paypal, '---------------', testSTring)
 	// 1.Set up a payment information object, Build PayPal payment request
-	const payReq:any = JSON.stringify({
+	const payReq: any = JSON.stringify({
 		intent: 'sale',
 		payer: {
 			payment_method: 'paypal'
@@ -58,14 +58,14 @@ export const pay = functions.https.onRequest((req, res) => {
 		}]
 	});
 	// 2.Initialize the payment and redirect the user.
-	paypal.payment.create(payReq, (error:any, payment_2:any) => {
-		const links:any = {};
+	paypal.payment.create(payReq, (error: any, payment_2: any) => {
+		const links: any = {};
 		if (error) {
 			console.error(error);
 			res.status(500).end();
 		} else {
 			// Capture HATEOAS links
-			payment_2.links.forEach((linkObj:any) => {
+			payment_2.links.forEach((linkObj: any) => {
 				links[linkObj.rel] = {
 					href: linkObj.href,
 					method: linkObj.method
@@ -87,11 +87,11 @@ export const pay = functions.https.onRequest((req, res) => {
 
 // 3.Complete the payment. Use the payer and payment IDs provided in the query string following the redirect.
 export const process = functions.https.onRequest(async (req, res) => {
-	const paymentId:string = String(req.query.paymentId);
-	const payerId :any =  {
+	const paymentId: string = String(req.query.paymentId);
+	const payerId: any = {
 		payer_id: req.query.PayerID
 	};
-	await paypal.payment.execute(paymentId, payerId, (error:any, payment_1:any) => {
+	await paypal.payment.execute(paymentId, payerId, (error: any, payment_1: any) => {
 		if (error) {
 			console.error(error);
 			res.redirect(`${req.protocol}://${req.get('host')}/error`); // replace with your url page error
@@ -116,8 +116,8 @@ export const process = functions.https.onRequest(async (req, res) => {
 				// replace debug url
 				res.redirect(`https://console.firebase.google.com/project/vano/functions/logs?search=&severity=DEBUG`);
 				return
-		}
-		
+			}
+
 		}
 	});
 });
@@ -176,6 +176,117 @@ const doPay = (request: any): Promise<any> => {
 		})
 	})
 }
+
+
+export const paymentPay = functions.https.onCall(async (data, context) => {
+	return new Promise((resolve, reject) => {
+
+		var uuid = require('node-uuid');
+		var uuid1 = uuid.v1();
+		var url = 'https://apiqa.invoice4u.co.il/Services/ApiService.svc?singleWsdl';
+		// var soapHeader = ''//xml string for header
+		var token = '';
+
+		/*using Soap CLient*/
+		soap.createClient(url, function (err, client) {
+			// client.addSoapHeader(soapHeader);
+
+			/*Start LoginFunctions*/
+			var args: any = {
+				email: "test@test.com",
+				password: "123456"
+			};
+
+			client.VerifyLogin(args, function (err: any, result: any) {
+				if (err) {
+					console.log('202')
+
+					reject(err);
+				}
+				args = {
+					token: result.VerifyLoginResult
+				};
+
+				/*End LoginFunctions*/
+
+				/* Start Invoice for General Client*/
+
+				/*Enmu type*/
+				var DocumentType = {
+					Invoice: 6
+				};
+				/*GenerelCustomer*/
+				var GenerelCustomer =
+				{
+					Name: "Anil",
+					Identifier: "1253658"
+				};
+
+				/*Item*/
+				var DocumentItem =
+				{
+					DocumentItem: {
+						code: "",
+						Name: "item name/description",
+						Price: 100,
+						Quantity: 1
+					}
+				};
+				/*Email Associated*/
+				var AssociatedEmail =
+				{
+					AssociatedEmail: [
+						{
+							Mail: "test@test.com",
+							IsUserMail: true
+						},
+						{
+							Mail: "customermail@mail.com",
+							IsUserMail: false
+						}
+					]
+				};
+
+				/*Document Parameter*/
+				var document = {
+					doc: {
+						ClientID: GenerelCustomer,
+						Currency: "ILS",
+						TaxIncluded: true,
+						DocumentType: DocumentType.Invoice,
+						Items: DocumentItem,
+						RoundAmount: 0.5,
+						// you can round the total 
+						Subject: "Document Subject",
+						TaxPercentage: 17,
+						AssociatedEmails: AssociatedEmail,
+						ApiIdentifier: uuid1,
+					},
+					token: result.VerifyLoginResult
+
+				}
+
+				console.log(document)
+
+				client.CreateDocument(document, function (err: any, result: any) {
+					console.log(err)
+					if(err){
+						console.log('269')
+						reject(err)
+					}
+					console.log('274',uuid1,DocumentType.Invoice)
+					resolve(result.CreateDocumentResult)
+
+				});
+				/* End Invoice for General Client*/
+
+
+			});
+		});
+	})
+
+})
+
 
 // Sends email to user after signup
 // export const freeTextEmail = functions.https.onCall(async (data, context) => {

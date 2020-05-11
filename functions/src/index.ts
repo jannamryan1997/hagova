@@ -73,23 +73,24 @@ exports.pay = functions.https.onCall(async (data, context) => {
 						method: linkObj.method
 					};
 				});
-				// If redirect url present, redirect user
-				if (Object.prototype.hasOwnProperty.call(links, 'approval_url')) {
-					// REDIRECT USER TO links['approval_url'].href
-					console.info(links.approval_url.href);
-					// res.json({"approval_url":links.approval_url.href});
 
-					resolve({ success: true,  href: links.approval_url.href });
+					// If redirect url present, redirect user
+					if (Object.prototype.hasOwnProperty.call(links, 'approval_url')) {
+						// REDIRECT USER TO links['approval_url'].href
+						console.info(links.approval_url.href);
+						// res.json({"approval_url":links.approval_url.href});
 
-				} else {
-					console.error('no redirect URI present');
-					reject({
-						status: 500,
-						err: true
-					})
+						resolve({ success: true, href: links.approval_url.href });
+
+					} else {
+						console.error('no redirect URI present');
+						reject({
+							status: 500,
+							err: true
+						})
+					}
 				}
-			}
-		});
+			});
 	})
 });
 
@@ -184,6 +185,98 @@ const doPay = (request: any): Promise<any> => {
 		})
 	})
 }
+
+
+export const paymentPay = functions.https.onCall(async (data, context) => {
+	var uuid = require('node-uuid');
+	var uuid1 = uuid.v1();
+	var url = 'https://apiqa.invoice4u.co.il/Services/ApiService.svc?singleWsdl';
+	// var soapHeader = ''//xml string for header
+	var token = '';
+
+	/*using Soap CLient*/
+	soap.createClient(url, function (err, client) {
+		// client.addSoapHeader(soapHeader);
+
+		/*Start LoginFunctions*/
+		var args: any = {
+			email: "test@test.com",
+			password: "123456"
+		};
+
+		client.VerifyLogin(args, function (err: any, result: any) {
+			if (err) {
+				throw err;
+			}
+			args = {
+				token: result.VerifyLoginResult
+			};
+
+			/*End LoginFunctions*/
+
+			/* Start InvoiceOrder for regular client*/
+
+			/*Enmu type*/
+			var DocumentType = {
+				InvoiceOrder: 6
+			};
+			/*Item*/
+			var DocumentItem =
+			{
+				DocumentItem: {
+					code: "",
+					Name: "item name/description",
+					Price: data.price,
+					Quantity: 1
+				}
+			};
+			/*Email Associated*/
+			var AssociatedEmail =
+			{
+				AssociatedEmail: [
+					{
+						Mail: "test@test.com",
+						IsUserMail: true
+					},
+					{
+						Mail: "customermail@mail.com",
+						IsUserMail: false
+					}
+				]
+			};
+
+			/*Document Parameter*/
+			var document = {
+				doc: {
+					ClientID: data.uid,
+					Currency: "ILS",
+					TaxIncluded: true,
+					// calculate the tax backwards , 
+					DocumentType: DocumentType.InvoiceOrder,
+					Items: DocumentItem,
+					RoundAmount: 0,
+					// you can round the total 
+					Subject: "Document Subject",
+					TaxPercentage: 17,
+					AssociatedEmails: AssociatedEmail,
+					ApiIdentifier: uuid1,
+				},
+				token: result.VerifyLoginResult
+
+			}
+
+			client.CreateDocument(document, function (err: any, result: any) {
+				console.log(result.CreateDocumentResult);
+
+			});
+			/* End InvoiceOrder for regular client*/
+
+
+		});
+	});
+})
+
+
 
 // Sends email to user after signup
 export const freeTextEmail = functions.https.onCall(async (data, context) => {
