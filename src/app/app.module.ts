@@ -33,7 +33,8 @@ import { AboutComponent } from "./components/about/about.component";
 import { PaymentComponent } from './components/payment/payment.component';
 import { DebtComponent } from './components/debt/debt.component';
 import { PayPalComponent } from './components/payPal/payPal.component';
-
+import { CookieModule } from 'ngx-cookie';
+import { SuccessGuard } from './guard/success.guard';
 @NgModule({
   declarations: [
     AppComponent,
@@ -45,11 +46,11 @@ import { PayPalComponent } from './components/payPal/payPal.component';
     ForgotPasswordComponent,
     MyAccountComponent,
     PackagesComponent,
-	AboutComponent,
-	PaymentComponent,
+    AboutComponent,
+    PaymentComponent,
     DebtComponent,
     PayPalComponent
-	
+
   ],
   imports: [
     BrowserModule,
@@ -63,10 +64,11 @@ import { PayPalComponent } from './components/payPal/payPal.component';
     BrowserAnimationsModule,
     PrimengModule,
     HttpClientModule,
-	AngularFireFunctionsModule,
-	NgxPayPalModule
+    AngularFireFunctionsModule,
+    NgxPayPalModule,
+    CookieModule.forRoot(),
   ],
-  providers: [{ provide: MAT_DATE_LOCALE, useValue: "en-GB" }],
+  providers: [{ provide: MAT_DATE_LOCALE, useValue: "en-GB" },SuccessGuard],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }

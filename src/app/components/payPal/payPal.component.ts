@@ -5,6 +5,7 @@ import { SendCommandService } from "src/app/services/send-command.service";
 import { Router, ActivatedRoute } from '@angular/router';
 import { PaymentData } from 'src/app/models/paymentmodel';
 import { AngularFireFunctions } from '@angular/fire/functions';
+import { CookieService } from 'ngx-cookie';
 @Component({
     selector: "app-payPal",
     templateUrl: "payPal.component.html",
@@ -13,8 +14,8 @@ import { AngularFireFunctions } from '@angular/fire/functions';
 
 export class PayPalComponent implements OnInit {
     public payPalConfig;
-  
- 
+
+
 
     public email: "1";
     public fullName: "fdfdfd";
@@ -25,7 +26,8 @@ export class PayPalComponent implements OnInit {
         private _auth: AuthService,
         private sendService: SendCommandService,
         private _router: Router,
-        private _activatedRoute: ActivatedRoute
+        private _activatedRoute: ActivatedRoute,
+        private _cookieService: CookieService,
     ) {
         this._activatedRoute.queryParams.subscribe((params) => {
             console.log(params);
@@ -38,7 +40,7 @@ export class PayPalComponent implements OnInit {
     }
 
     ngOnInit() {
-       this._initConfig()
+        this._initConfig()
     }
     public logout(): void {
         this._auth.logout();
@@ -55,21 +57,22 @@ export class PayPalComponent implements OnInit {
         this.sendService.SendPayment(data).then((res: any) => {
             console.log(res);
             if (res.success) {
-                this._router.navigate(["/payment"], { queryParams: { url: res.result.ClearingRedirectUrl } })
+                
+                this._router.navigate(["/payment"], { queryParams: { url: res.result.ClearingRedirectUrl } });
             }
         })
     }
 
 
     private _initConfig(): void {
-    
-        
+
+
         this.payPalConfig = {
             currency: 'EUR',
             clientId: 'sb',
             createOrder: (data) => <ICreateOrderRequest>{
-                
-            
+
+
                 intent: 'CAPTURE',
                 purchase_units: [{
                     amount: {
@@ -102,8 +105,8 @@ export class PayPalComponent implements OnInit {
             },
             onApprove: (data, actions) => {
                 console.log('onApprove - transaction was approved, but not authorized', data, actions);
-                console.log(data,"data");
-                
+                console.log(data, "data");
+
                 actions.order.get().then(details => {
                     console.log('onApprove - you can get full order details inside onApprove: ', details);
                 });
@@ -130,30 +133,19 @@ export class PayPalComponent implements OnInit {
         };
     }
 
-    public paypalClick():void{
-            // const callable = this.fun.httpsCallable('pay');
-            // callable({ 
-            //   price:15,
-            //   uid:155, 
-        
-            // }).toPromise().then((result)=>{
-            //   console.log("mail ok",result);
-            // }).catch((err)=>{
-            //   console.log(err);
-            //   return false;
-            // })
-        
-            const data: any = {
-                price:15,
-                uid:155
+    public paypalClick(): void {
+        const data: any = {
+            price: this.sum,
+            uid: 155
+        }
+        this.sendService.SendPay(data).then((res: any) => {
+            console.log(res);
+            if (res.success) {
+                this._cookieService.put('success', res.href);
+                this._router.navigate(["/payment"], { queryParams: { url: res.href } })
             }
-            this.sendService.SendPay(data).then((res: any) => {
-                console.log(res);
-                // if (res.success) {
-                //     this._router.navigate(["/payment"], { queryParams: { url: res.result.ClearingRedirectUrl } })
-                // }
-            })
-          
-          
+        })
+
+
     }
 }
