@@ -32,8 +32,8 @@ import * as sgMail from '@sendgrid/mail';
 export const pay = functions.https.onRequest((req, res) => {
 	let testSTring = paypal.configure({
 		'mode': 'sandbox', //sandbox or live
-		'client_id': 'AaU8tQfmz1_MFDTKuf84yYERXvdDt2ZFJVrxhNW_49DazF4A_F0VBuKyV5_nntyEdZqUa5Oq9ZBj65GV',
-		'client_secret': 'EAZ8aFDU4lHHLy1bQqULYWqznf3dBknXZW3AH__zFC0bUs8AGUyR6RNbm-jHvqtikX7PsSqMO5vxuvKm'
+		'client_id': 'AUfYkgfseNxP9vLjcYqw2QAfrhhajgAPFAWdGb6btCNIlHwvLzBUKkw0bIn01Y2f08vpcc2Mzbh_GEdR',
+		'client_secret': 'ENIrkixbD-yeqx9GdcwzGqyQo73pHVbmRtEH0FKWk7lBicyfInJPsHjSYTivhERCkwLDxZV-FWwDnmnw'
 	});
 
 	console.log(paypal, '---------------', testSTring)
@@ -249,7 +249,25 @@ export const createCustomer = functions.https.onCall(async (data, context) => {
 					if (err) {
 						reject(err)
 					}
-					return resolve(result.CreateCustomerResult);
+					let _res = result.CreateCustomerResult
+					if (!_res.Errors) {
+				
+
+
+						admin.database().ref('transactions/').push({
+							price: data.price,
+							paymentUserData: _res
+						}).then((res: any) => {
+							return resolve(_res);
+						}).catch((err: any) => {
+							reject(err)
+						})
+					} else {
+						return resolve(_res);
+
+					}
+
+
 
 				});
 				/*End Function for GetFullCustomer detail*/

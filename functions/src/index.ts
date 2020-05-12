@@ -2,7 +2,12 @@ import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import * as paypal from 'paypal-rest-sdk';
 import * as soap from "soap";
-admin.initializeApp();
+const serviceAccount = require("./hagove-key.json");
+
+admin.initializeApp({
+	credential: admin.credential.cert(serviceAccount),
+	databaseURL: "https://hagove-2dee7.firebaseio.com"
+});
 
 const twilio = require('twilio');
 
@@ -23,8 +28,8 @@ sgMail.setApiKey(API_KEY);
 
 paypal.configure({
 	'mode': 'sandbox', //sandbox or live
-	'client_id': 'AaU8tQfmz1_MFDTKuf84yYERXvdDt2ZFJVrxhNW_49DazF4A_F0VBuKyV5_nntyEdZqUa5Oq9ZBj65GV',
-	'client_secret': 'EAZ8aFDU4lHHLy1bQqULYWqznf3dBknXZW3AH__zFC0bUs8AGUyR6RNbm-jHvqtikX7PsSqMO5vxuvKm'
+	'client_id': 'AUfYkgfseNxP9vLjcYqw2QAfrhhajgAPFAWdGb6btCNIlHwvLzBUKkw0bIn01Y2f08vpcc2Mzbh_GEdR',
+	'client_secret': 'ENIrkixbD-yeqx9GdcwzGqyQo73pHVbmRtEH0FKWk7lBicyfInJPsHjSYTivhERCkwLDxZV-FWwDnmnw'
 });
 
 
@@ -74,23 +79,23 @@ exports.pay = functions.https.onCall(async (data, context) => {
 					};
 				});
 
-					// If redirect url present, redirect user
-					if (Object.prototype.hasOwnProperty.call(links, 'approval_url')) {
-						// REDIRECT USER TO links['approval_url'].href
-						console.info(links.approval_url.href);
-						// res.json({"approval_url":links.approval_url.href});
+				// If redirect url present, redirect user
+				if (Object.prototype.hasOwnProperty.call(links, 'approval_url')) {
+					// REDIRECT USER TO links['approval_url'].href
+					console.info(links.approval_url.href);
+					// res.json({"approval_url":links.approval_url.href});
 
-						resolve({ success: true, href: links.approval_url.href });
+					resolve({ success: true, href: links.approval_url.href });
 
-					} else {
-						console.error('no redirect URI present');
-						reject({
-							status: 500,
-							err: true
-						})
-					}
+				} else {
+					console.error('no redirect URI present');
+					reject({
+						status: 500,
+						err: true
+					})
 				}
-			});
+			}
+		});
 	})
 });
 
@@ -119,6 +124,7 @@ exports.process = functions.https.onRequest(async (req, res) => {
 					'date': date
 				})
 				res.redirect(`${req.protocol}://${req.get('host')}/success`); // replace with your url, page success
+
 				return
 			} else {
 				console.warn('payment.state: not approved ?');
@@ -187,95 +193,210 @@ const doPay = (request: any): Promise<any> => {
 }
 
 
-export const paymentPay = functions.https.onCall(async (data, context) => {
-	var uuid = require('node-uuid');
-	var uuid1 = uuid.v1();
-	var url = 'https://apiqa.invoice4u.co.il/Services/ApiService.svc?singleWsdl';
-	// var soapHeader = ''//xml string for header
-	var token = '';
+export const createCustomer = functions.https.onCall(async (data, context) => {
+	return new Promise((resolve, reject) => {
+		/**** Module ****/
+		let soap = require('soap');
+		/*Local letible*/
+		let url = 'https://apiqa.invoice4u.co.il/Services/ApiService.svc?singleWsdl';
+		let soapHeader = ''//xml string for header
+		let token = '';
 
-	/*using Soap CLient*/
-	soap.createClient(url, function (err, client) {
-		// client.addSoapHeader(soapHeader);
+		/*using Soap CLient*/
+		soap.createClient(url, function (err: any, client: any) {
+			client.addSoapHeader(soapHeader);
 
-		/*Start LoginFunctions*/
-		var args: any = {
-			email: "test@test.com",
-			password: "123456"
-		};
-
-		client.VerifyLogin(args, function (err: any, result: any) {
-			if (err) {
-				throw err;
-			}
-			args = {
-				token: result.VerifyLoginResult
+			/*Start LoginFunctions*/
+			let args: any = {
+				email: "Test@test.com",
+				password: "123456"
 			};
 
-			/*End LoginFunctions*/
+			client.VerifyLogin(args, function (err: any, result: any) {
+				if (err) {
+					reject(err)
 
-			/* Start InvoiceOrder for regular client*/
-
-			/*Enmu type*/
-			var DocumentType = {
-				InvoiceOrder: 6
-			};
-			/*Item*/
-			var DocumentItem =
-			{
-				DocumentItem: {
-					code: "",
-					Name: "item name/description",
-					Price: data.price,
-					Quantity: 1
 				}
-			};
-			/*Email Associated*/
-			var AssociatedEmail =
-			{
-				AssociatedEmail: [
-					{
-						Mail: "test@test.com",
-						IsUserMail: true
+				args = {
+					token: result.VerifyLoginResult
+				};
+				/*End LoginFunctions*/
+				/*Start Function for CreateCustomer detail*/
+				let customer = {
+					cu: {
+						Name: data.name,
+						Email: data.email,
+						Phone: data.phone,
+						Fax: "012345678",
+						Address: "Delhi",
+						City: "Akshardham",
+						Zip: "12345",
+						UniqueID: "25896478",
+						OrgID: 111,
+						PayTerms: 30,
+						Cell: "0522256664",
+						Active: 1
 					},
-					{
-						Mail: "customermail@mail.com",
-						IsUserMail: false
+					token: result.VerifyLoginResult
+
+				}
+				client.CreateCustomer(customer, function (err: any, result: any) {
+					if (err) {
+						reject(err)
 					}
-				]
-			};
+					return resolve(result.CreateCustomerResult);
 
-			/*Document Parameter*/
-			var document = {
-				doc: {
-					ClientID: data.uid,
-					Currency: "ILS",
-					TaxIncluded: true,
-					// calculate the tax backwards , 
-					DocumentType: DocumentType.InvoiceOrder,
-					Items: DocumentItem,
-					RoundAmount: 0,
-					// you can round the total 
-					Subject: "Document Subject",
-					TaxPercentage: 17,
-					AssociatedEmails: AssociatedEmail,
-					ApiIdentifier: uuid1,
-				},
-				token: result.VerifyLoginResult
-
-			}
-
-			client.CreateDocument(document, function (err: any, result: any) {
-				console.log(result.CreateDocumentResult);
-
+				});
+				/*End Function for GetFullCustomer detail*/
 			});
-			/* End InvoiceOrder for regular client*/
-
-
 		});
-	});
+	})
 })
 
+
+export const invoiceReceipt = functions.https.onCall(async (data, context) => {
+	return new Promise((resolve, reject) => {
+		/**** Module ****/
+		let soap = require('soap');
+		let uuid = require('node-uuid');
+		let uuid1 = uuid.v1();
+
+
+		/*Local letible*/
+
+		let url = 'https://apiqa.invoice4u.co.il/Services/ApiService.svc?singleWsdl';
+		let soapHeader = ''//xml string for header
+		let token = '';
+
+		/*using Soap CLient*/
+		soap.createClient(url, function (err: any, client: any) {
+			client.addSoapHeader(soapHeader);
+
+			/*Start LoginFunctions*/
+			let args: any = {
+				email: "Test@test.com",
+				password: "123456"
+			};
+
+			client.VerifyLogin(args, function (err: any, result: any) {
+				if (err) {
+					console.log(err, '386')
+
+					reject(err)
+				}
+				args = {
+					token: result.VerifyLoginResult
+				};
+
+				/*End LoginFunctions*/
+
+				/*Start InvoiceReceipt for RegularCustomer*/
+
+				/*Enmu type*/
+				// let PaymentTypes = {
+				// 	CreditCard: 1,
+				// 	Check: 2,
+				// 	MoneyTransfer: 3,
+				// 	Cash: 4,
+				// 	Credit: 5
+				// };
+				// let DocumentType = {
+				// 	Invoice: 1,
+				// 	Receipt: 2,
+				// 	InvoiceReceipt: 3,
+				// 	InvoiceCredit: 4,
+				// 	ProformaInvoice: 5,
+				// 	InvoiceOrder: 6,
+				// 	InvoiceQuote: 7,
+				// 	InvoiceShip: 8,
+				// 	Deposits: 9,
+				// };
+				let currdatetime = new Date();
+				/*Payments*/
+				let Payments = {
+					Payments: {
+						Date: currdatetime,
+						Amount: 100.00,
+						PaymentType: data.aymentTypes,
+					}
+				};
+				/*Item*/
+				let DocumentItem =
+				{
+					DocumentItem: {
+						code: "",
+						Name: "item name/description",
+						Price: 100,
+						Quantity: 1
+					}
+				};
+				/*Email Associated*/
+				let AssociatedEmail =
+				{
+					AssociatedEmail: [
+						{
+							Mail: "test@test.com",
+							IsUserMail: true
+						},
+						{
+							Mail: "customermail@mail.com",
+							IsUserMail: false
+						}
+					]
+				};
+
+				/*Document Parameter*/
+				let document = {
+					doc: {
+						ClientID: data.clientId,
+						Currency: "ILS",
+						DocumentType: data.documentType,
+						Items: DocumentItem,
+						Payments: Payments,
+						RoundAmount: 0,
+						// you can round the total 
+						Subject: "Document Subject",
+						TaxPercentage: 17,
+						AssociatedEmails: AssociatedEmail,
+						ApiIdentifier: uuid1,
+					},
+					token: result.VerifyLoginResult
+				}
+
+				console.log(document, '------------')
+				client.CreateDocument(document, function (err: any, result: any) {
+					if (err) {
+						console.log(err, '469')
+						reject(err)
+					}
+					console.log(result.CreateDocumentResult.Errors)
+					resolve({ result: result.CreateDocumentResult })
+
+				});
+				/*End InvoiceReceipt for RegularCustomer*/
+
+
+			});
+		});
+	})
+});
+
+
+export const paymentPay = functions.https.onCall(async (data, context) => {
+	return new Promise((resolve, reject) => {
+
+
+		admin.database().ref('transactions/').push({
+			price: data.price,
+			user: data.uid
+		}).then((res: any) => {
+			console.log(res)
+			resolve("ok")
+		}).catch((err: any) => {
+			reject(err)
+		})
+	})
+})
 
 
 // Sends email to user after signup
