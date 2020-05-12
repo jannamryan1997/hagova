@@ -5,8 +5,8 @@ import * as soap from "soap";
 var serviceAccount = require("./hagove-key.json");
 
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://hagove-2dee7.firebaseio.com"
+	credential: admin.credential.cert(serviceAccount),
+	databaseURL: "https://hagove-2dee7.firebaseio.com"
 });
 const twilio = require('twilio');
 
@@ -185,31 +185,109 @@ const doPay = (request: any): Promise<any> => {
 export const paymentPay = functions.https.onCall(async (data, context) => {
 	return new Promise((resolve, reject) => {
 
-		var uuid = require('node-uuid');
-		var uuid1 = uuid.v1();
+
+		admin.database().ref('transactions/').push({
+			price: data.price,
+			user: data.uid
+		}).then((res: any) => {
+			console.log(res)
+			resolve("ok")
+		}).catch((err: any) => {
+			reject(err)
+		})
+	})
+})
+
+export const createCustomer = functions.https.onCall(async (data, context) => {
+	return new Promise((resolve, reject) => {
+		/**** Module ****/
+		var soap = require('soap');
+		/*Local Varible*/
 		var url = 'https://apiqa.invoice4u.co.il/Services/ApiService.svc?singleWsdl';
-		// var soapHeader = ''//xml string for header
+		var soapHeader = ''//xml string for header
 		var token = '';
-		const ref = admin.database().ref('transactions/').push({
-			price:0.99,
-			user:'gevor'
-		});
 
 		/*using Soap CLient*/
-		soap.createClient(url, function (err, client) {
-			// client.addSoapHeader(soapHeader);
+		soap.createClient(url, function (err: any, client: any) {
+			client.addSoapHeader(soapHeader);
 
 			/*Start LoginFunctions*/
 			var args: any = {
-				email: "test@test.com",
+				email: "Test@test.com",
 				password: "123456"
 			};
 
 			client.VerifyLogin(args, function (err: any, result: any) {
 				if (err) {
-					console.log('202')
+					reject(err)
 
-					reject(err);
+				}
+				args = {
+					token: result.VerifyLoginResult
+				};
+				/*End LoginFunctions*/
+				/*Start Function for CreateCustomer detail*/
+				var customer = {
+					cu: {
+						Name: data.name,
+						Email: data.email,
+						Phone: data.phone,
+						Fax: "012345678",
+						Address: "Delhi",
+						City: "Akshardham",
+						Zip: "12345",
+						UniqueID: "25896478",
+						OrgID: 111,
+						PayTerms: 30,
+						Cell: "0522256664",
+						Active: 1
+					},
+					token: result.VerifyLoginResult
+
+				}
+				client.CreateCustomer(customer, function (err: any, result: any) {
+					if (err) {
+						reject(err)
+					}
+					return resolve(result.CreateCustomerResult);
+
+				});
+				/*End Function for GetFullCustomer detail*/
+			});
+		});
+	})
+})
+
+
+export const invoiceReceipt = functions.https.onCall(async (data, context) => {
+	return new Promise((resolve, reject) => {
+		/**** Module ****/
+		var soap = require('soap');
+		var uuid = require('node-uuid');
+		var uuid1 = uuid.v1();
+
+
+		/*Local Varible*/
+
+		var url = 'https://apiqa.invoice4u.co.il/Services/ApiService.svc?singleWsdl';
+		var soapHeader = ''//xml string for header
+		var token = '';
+
+		/*using Soap CLient*/
+		soap.createClient(url, function (err: any, client: any) {
+			client.addSoapHeader(soapHeader);
+
+			/*Start LoginFunctions*/
+			var args: any = {
+				email: "Test@test.com",
+				password: "123456"
+			};
+
+			client.VerifyLogin(args, function (err: any, result: any) {
+				if (err) {
+					console.log(err, '386')
+
+					reject(err)
 				}
 				args = {
 					token: result.VerifyLoginResult
@@ -217,19 +295,36 @@ export const paymentPay = functions.https.onCall(async (data, context) => {
 
 				/*End LoginFunctions*/
 
-				/* Start Invoice for General Client*/
+				/*Start InvoiceReceipt for RegularCustomer*/
 
 				/*Enmu type*/
+				var PaymentTypes = {
+					CreditCard: 1,
+					Check: 2,
+					MoneyTransfer: 3,
+					Cash: 4,
+					Credit: 5
+				};
 				var DocumentType = {
-					Invoice: 6
+					Invoice: 1,
+					Receipt: 2,
+					InvoiceReceipt: 3,
+					InvoiceCredit: 4,
+					ProformaInvoice: 5,
+					InvoiceOrder: 6,
+					InvoiceQuote: 7,
+					InvoiceShip: 8,
+					Deposits: 9,
 				};
-				/*GenerelCustomer*/
-				var GenerelCustomer =
-				{
-					Name: "Anil",
-					Identifier: "1253658"
+				var currdatetime = new Date();
+				/*Payments*/
+				var Payments = {
+					Payments: {
+						Date: currdatetime,
+						Amount: 100.00,
+						PaymentType: data.aymentTypes,
+					}
 				};
-
 				/*Item*/
 				var DocumentItem =
 				{
@@ -258,12 +353,12 @@ export const paymentPay = functions.https.onCall(async (data, context) => {
 				/*Document Parameter*/
 				var document = {
 					doc: {
-						ClientID: GenerelCustomer,
+						ClientID: data.clientId,
 						Currency: "ILS",
-						TaxIncluded: true,
-						DocumentType: DocumentType.Invoice,
+						DocumentType: data.documentType,
 						Items: DocumentItem,
-						RoundAmount: 0.5,
+						Payments: Payments,
+						RoundAmount: 0,
 						// you can round the total 
 						Subject: "Document Subject",
 						TaxPercentage: 17,
@@ -271,29 +366,27 @@ export const paymentPay = functions.https.onCall(async (data, context) => {
 						ApiIdentifier: uuid1,
 					},
 					token: result.VerifyLoginResult
-
 				}
 
-				console.log(document)
-
+				console.log(document, '------------')
 				client.CreateDocument(document, function (err: any, result: any) {
-					console.log(err)
-					if(err){
-						console.log('269')
+					if (err) {
+						console.log(err, '469')
 						reject(err)
 					}
-					console.log('274',uuid1,DocumentType.Invoice)
-					resolve(result.CreateDocumentResult)
+					console.log(result.CreateDocumentResult.Errors)
+					resolve({ result: result.CreateDocumentResult })
 
 				});
-				/* End Invoice for General Client*/
+				/*End InvoiceReceipt for RegularCustomer*/
 
 
 			});
 		});
 	})
+});
 
-})
+
 
 
 // Sends email to user after signup
