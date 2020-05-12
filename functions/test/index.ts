@@ -2,8 +2,12 @@ import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import * as paypal from 'paypal-rest-sdk';
 import * as soap from "soap";
-admin.initializeApp();
+var serviceAccount = require("./hagove-key.json");
 
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://hagove-2dee7.firebaseio.com"
+});
 const twilio = require('twilio');
 
 // const accountSid = functions.config().twilio.sid;
@@ -186,6 +190,10 @@ export const paymentPay = functions.https.onCall(async (data, context) => {
 		var url = 'https://apiqa.invoice4u.co.il/Services/ApiService.svc?singleWsdl';
 		// var soapHeader = ''//xml string for header
 		var token = '';
+		const ref = admin.database().ref('transactions/').push({
+			price:0.99,
+			user:'gevor'
+		});
 
 		/*using Soap CLient*/
 		soap.createClient(url, function (err, client) {
