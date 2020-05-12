@@ -252,7 +252,24 @@ export const createCustomer = functions.https.onCall(async (data, context) => {
 					if (err2) {
 						reject(err2)
 					}
-					resolve(result2.CreateCustomerResult);
+					
+					let _res = result2.CreateCustomerResult
+					if (!_res.Errors) {
+				
+
+
+						admin.database().ref('transactions/').push({
+							price: data.price,
+							paymentUserData: _res
+						}).then((res: any) => {
+							 resolve(_res);
+						}).catch((err9: any) => {
+							reject(err9)
+						})
+					} else {
+						 resolve(_res);
+
+					}
 
 				});
 				/*End Function for GetFullCustomer detail*/
