@@ -2,7 +2,18 @@ import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import * as paypal from 'paypal-rest-sdk';
 import * as soap from "soap";
-const serviceAccount = require("./hagove-key.json");
+const serviceAccount:any = {
+    "type": "service_account",
+    "project_id": "hagove-2dee7",
+    "private_key_id": "6ed1f934707c611bf897b839a0453765de3ef464",
+    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQClyboIWW0Lashr\nrt+fxmeRJb6sqqmgxsJVAILehUIZkoIWySMr2VYIm3aJ2dnE0iZ5e+8reJzK2rE1\nHlol2LqmV/vCYEw08FSNrYNb82k9sdkHC+Jpf8T7BZe+oT+bAVHMsOvK7pBNDFU+\nCKSW2jXiQccvAsxsRGmrrJT1Pq9UepasBxYGCBf4unf55W7txY8NUmsmPo9OfgFi\nKh6AKLZ7meFNzz2ud/42L6jfZtNtt9ZbHQNva2WWE3Als/CjMabUTJxxCwsmPqbT\nx7W4eN83dR7OTZXxCjWK6ybUdUZr40I3EpTJwQ1e2gGHGG75KhCTCdx90WM3gacR\nBI00UjaXAgMBAAECggEACdOZo7oNNRKIu507YwCDDf7jPN/GuyFczmX/28mhP9vH\nuysD2ysAJvV0Arq3ZiugnS3D4Ns+y+VHgKMCa+DbO1XWtdA4ZCDkmhsxQId+cuoy\nN3E0Y9VvawOLWYC8QOdEnnHUIAyg3/g9qzYe71QSwozsjfRIApjRfJv3nkuvX73l\n9tg4VQ83O56lKqCJF2ceJNACNRwW9XRRS6hgSg7Dj07USbl5uHA6XjwXdEGFvtjr\n3uCwjtgeju85t0+94BwO4ZXj3S2SSI+ekgNkKoNLjxG4ApF2rvGh2gmKHlV+TmvL\nVDuvHhII5vx6lnpgyglAq+EKsHPEFlmxeS1NIHdktQKBgQDT6NWeqDdNVceHJ323\nL8ddd6K6tSc3HYHQTguu57E0A0Ikp7C1ALgt4ueJaw/FBIc4EARZ3lJo/WbDPj6q\nYNXW873bSk6lPFrjgtlSKGnnpxE2dPyRO75k89e8F0MRHU47RckBH9Qsp3hTDoME\nNfFVLPWYFXRusrtY08kYyPYKBQKBgQDISEWnZCwMQPWXRlkbGEyVCW9M/IWxyJOe\nxpKgVc1weU49laBM6RC47qaMofq55iGDHyKVwr5o1qM1Wo91Y74sOw61WaZ0eC45\ngRvZolld4yVkuMdUnyHIPgPi9FEKo/PpL3+51nc1utD8mhCKAZiS/dbwpTo4wOSA\nM8HPlBY06wKBgBzaF7O5XYY3BqqdMt2tMKzGLC7VmVhEuTb+WVLgEt1tECVje4i5\nZ1pACZxJKmV9v1dfvufpgDjxP3uXzvptos/YceIYlOqkdA+D8kjgXcL/mTVb6kNv\n6fVeyeG/HQ+IeO1TDBIOHlpSFuzgDfCV05zwOSQSz75+sUlf1IJ+YhltAoGAW3nO\n/oZdK/ebdE14M0zk5YlaoZIQykOvUOynWb32yDFPkAdAIQCuV5kAzujIqJG4qrfU\nxwwchavK/XpwXZCB8pfCvwfEZBvkGPWkL8HcCWrO0HMo77iC6H+SrN0kCrUZmV7N\neqa+6fZ6r3T6qt3RvwlbW6xLrFJFy1xYYCPmBKMCgYAj8YlYPkdhTMvURCe0KF3p\n1D7P/IyH2d9cdDs6+F5eUnJ1RltYPryJiwMz3pm+hZ8Mx+fpUug5yNJhTeZ4PSge\nILI9n6HpAdJGtu1LVssDSpqdFjy6xNqbSxF2hYqGVRV0u3S9U1BDRPNQImQpvRjO\n68IFmkSesQT3iBzUFiIJlA==\n-----END PRIVATE KEY-----\n",
+    "client_email": "firebase-adminsdk-n3xeq@hagove-2dee7.iam.gserviceaccount.com",
+    "client_id": "114234327249132969899",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-n3xeq%40hagove-2dee7.iam.gserviceaccount.com"
+}
 
 admin.initializeApp({
 	credential: admin.credential.cert(serviceAccount),
@@ -196,15 +207,12 @@ const doPay = (request: any): Promise<any> => {
 export const createCustomer = functions.https.onCall(async (data, context) => {
 	return new Promise((resolve, reject) => {
 		/**** Module ****/
-		let soap = require('soap');
 		/*Local letible*/
-		let url = 'https://apiqa.invoice4u.co.il/Services/ApiService.svc?singleWsdl';
-		let soapHeader = ''//xml string for header
-		let token = '';
+		const url = 'https://apiqa.invoice4u.co.il/Services/ApiService.svc?singleWsdl';
+		// let token = '';
 
 		/*using Soap CLient*/
-		soap.createClient(url, function (err: any, client: any) {
-			client.addSoapHeader(soapHeader);
+		soap.createClient(url, function (err: any, _client: any) {
 
 			/*Start LoginFunctions*/
 			let args: any = {
@@ -212,9 +220,9 @@ export const createCustomer = functions.https.onCall(async (data, context) => {
 				password: "123456"
 			};
 
-			client.VerifyLogin(args, function (err: any, result: any) {
-				if (err) {
-					reject(err)
+			_client.VerifyLogin(args, function (err1: any, result: any) {
+				if (err1) {
+					reject(err1)
 
 				}
 				args = {
@@ -222,7 +230,7 @@ export const createCustomer = functions.https.onCall(async (data, context) => {
 				};
 				/*End LoginFunctions*/
 				/*Start Function for CreateCustomer detail*/
-				let customer = {
+				const customer = {
 					cu: {
 						Name: data.name,
 						Email: data.email,
@@ -240,11 +248,11 @@ export const createCustomer = functions.https.onCall(async (data, context) => {
 					token: result.VerifyLoginResult
 
 				}
-				client.CreateCustomer(customer, function (err: any, result: any) {
-					if (err) {
-						reject(err)
+				_client.CreateCustomer(customer, function (err2: any, result2: any) {
+					if (err2) {
+						reject(err2)
 					}
-					return resolve(result.CreateCustomerResult);
+					resolve(result2.CreateCustomerResult);
 
 				});
 				/*End Function for GetFullCustomer detail*/
@@ -257,20 +265,17 @@ export const createCustomer = functions.https.onCall(async (data, context) => {
 export const invoiceReceipt = functions.https.onCall(async (data, context) => {
 	return new Promise((resolve, reject) => {
 		/**** Module ****/
-		let soap = require('soap');
-		let uuid = require('node-uuid');
-		let uuid1 = uuid.v1();
+		const uuid = require('node-uuid');
+		const uuid1 = uuid.v1();
 
 
 		/*Local letible*/
 
-		let url = 'https://apiqa.invoice4u.co.il/Services/ApiService.svc?singleWsdl';
-		let soapHeader = ''//xml string for header
-		let token = '';
+		const url = 'https://apiqa.invoice4u.co.il/Services/ApiService.svc?singleWsdl';
+		// let token = '';
 
 		/*using Soap CLient*/
-		soap.createClient(url, function (err: any, client: any) {
-			client.addSoapHeader(soapHeader);
+		soap.createClient(url, function (err: any, _client: any) {
 
 			/*Start LoginFunctions*/
 			let args: any = {
@@ -278,14 +283,14 @@ export const invoiceReceipt = functions.https.onCall(async (data, context) => {
 				password: "123456"
 			};
 
-			client.VerifyLogin(args, function (err: any, result: any) {
-				if (err) {
-					console.log(err, '386')
+			_client.VerifyLogin(args, function (_err1: any, _result1: any) {
+				if (_err1) {
+					console.log(_err1, '386')
 
-					reject(err)
+					reject(_err1)
 				}
 				args = {
-					token: result.VerifyLoginResult
+					token: _result1.VerifyLoginResult
 				};
 
 				/*End LoginFunctions*/
@@ -313,7 +318,7 @@ export const invoiceReceipt = functions.https.onCall(async (data, context) => {
 				// };
 				let currdatetime = new Date();
 				/*Payments*/
-				let Payments = {
+				const Payments = {
 					Payments: {
 						Date: currdatetime,
 						Amount: 100.00,
@@ -321,7 +326,7 @@ export const invoiceReceipt = functions.https.onCall(async (data, context) => {
 					}
 				};
 				/*Item*/
-				let DocumentItem =
+				const DocumentItem =
 				{
 					DocumentItem: {
 						code: "",
@@ -346,7 +351,7 @@ export const invoiceReceipt = functions.https.onCall(async (data, context) => {
 				};
 
 				/*Document Parameter*/
-				let document = {
+				const document = {
 					doc: {
 						ClientID: data.clientId,
 						Currency: "ILS",
@@ -360,17 +365,17 @@ export const invoiceReceipt = functions.https.onCall(async (data, context) => {
 						AssociatedEmails: AssociatedEmail,
 						ApiIdentifier: uuid1,
 					},
-					token: result.VerifyLoginResult
+					token: _result1.VerifyLoginResult
 				}
 
 				console.log(document, '------------')
-				client.CreateDocument(document, function (err: any, result: any) {
-					if (err) {
-						console.log(err, '469')
-						reject(err)
+				_client.CreateDocument(document, function (_err: any, _result: any) {
+					if (_err) {
+						console.log(_err, '469')
+						reject(_err)
 					}
-					console.log(result.CreateDocumentResult.Errors)
-					resolve({ result: result.CreateDocumentResult })
+					console.log(_result.CreateDocumentResult.Errors)
+					resolve({ _result: _result.CreateDocumentResult })
 
 				});
 				/*End InvoiceReceipt for RegularCustomer*/
