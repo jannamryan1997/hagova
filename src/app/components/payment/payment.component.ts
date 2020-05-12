@@ -58,6 +58,8 @@ error_text:string;
     this.user_sub = this.auth.getUserState()
       .subscribe(user => {
         this.user = user;
+        console.log(this.user);
+        
 	  });
 	
 	//  console.log(this.router);

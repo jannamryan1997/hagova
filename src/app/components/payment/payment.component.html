@@ -20,15 +20,19 @@
 	</mat-toolbar-row>
 </mat-toolbar>
 <div class="details" *ngIf="user">
-	<!-- spacer -->
-	<div></div>
-	<!-- end spacer -->
+	
+	<div class="details-user">
+		<span class="hello-user">שלום:</span> {{ user?.displayName }}
+	</div>
+</div>
+<div class="details">
+	
 	<div class="details-user">
 		<span class="hello-user">שלום:</span> {{ user?.displayName }}
 	</div>
 </div>
 
-
 <div *ngIf='url'>
 	<iframe [src]='url'></iframe>
 </div>
+
