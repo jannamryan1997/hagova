@@ -162,12 +162,24 @@ export const payment = functions.https.onCall(async (data, context) => {
 		paymentsNum: 1,
 		userEmail: "test@test.com",
 		userPassword: "123456",
-		returnUrl: "http://localhost:4200/api/geturl"
+		returnUrl: "https://us-central1-hagove-2dee7.cloudfunctions.net/payStatus?"
 	};
 	const result = await doPay(request);
 
 	return { success: true, result };
 })
+
+export const payStatus = functions.https.onRequest((req, res) => {
+	return new Promise((resolve, reject) => {
+		console.log(req.query)
+		if(req.query.response == 'succses'){
+			resolve("ok")
+
+		}else{
+			reject('false')
+		}
+	})
+});
 
 const doPay = (request: any): Promise<any> => {
 	return new Promise((resolve, reject) => {
