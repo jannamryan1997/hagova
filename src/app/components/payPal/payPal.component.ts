@@ -21,6 +21,7 @@ export class PayPalComponent implements OnInit {
     public fullName: "fdfdfd";
     public phone: "2";
     public sum: "44444444.01";
+    public id:number;
     constructor(
         private fun: AngularFireFunctions,
         private _auth: AuthService,
@@ -34,7 +35,9 @@ export class PayPalComponent implements OnInit {
             this.email = params.Email,
                 this.fullName = params.FullName,
                 this.phone = params.Phone,
-                this.sum = params.Sum
+                this.sum = params.Sum,
+                this.id=params.ID
+
 
         })
     }
@@ -55,7 +58,7 @@ export class PayPalComponent implements OnInit {
             Sum: parseInt(this.sum),
         }
         this.sendService.SendPayment(data).then((res: any) => {
-            console.log(res);
+            console.log(res,"resultat meshulam");
             if (res.success) {
                 
                 this._router.navigate(["/payment"], { queryParams: { url: res.result.ClearingRedirectUrl } });

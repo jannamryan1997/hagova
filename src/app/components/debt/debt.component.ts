@@ -29,7 +29,7 @@ export class DebtComponent implements OnInit, OnDestroy {
   debtNumber: string = "12345";
   debtSum: string = "";
   debtSumAgorot: string = "";
-  
+
   price: string
   _sms: number = 0;
   _emails: number = 0;
@@ -98,22 +98,41 @@ export class DebtComponent implements OnInit, OnDestroy {
     this.router.navigate(["/packages"]);
   }
 
+  // meshulam() {
+  // let sum=parseInt(this.debtSum) + parseInt(this.debtSumAgorot) * 0.01
+  //   this.router.navigate(['/pay'],
+  //     {
+  //       queryParams:
+  //       {
+  //         FullName: this.creditName,
+  //         Email: this.pasportNumber,
+  //         Phone: this.debtNumber,
+  //         Sum:sum
+  //       }
+  //     })
+
+  // }
+
   meshulam() {
-  let sum=parseInt(this.debtSum) + parseInt(this.debtSumAgorot) * 0.01
-    this.router.navigate(['/pay'],
-      {
-        queryParams:
-        {
-          FullName: this.creditName,
-          Email: this.pasportNumber,
-          Phone: this.debtNumber,
-          Sum:sum
-        }
-      })
+    let sum = parseInt(this.debtSum) + parseInt(this.debtSumAgorot) * 0.01;
+    let ID:number;
+    const data: any = {
+      name: this.creditName,
+      email: this.pasportNumber,
+      phone: parseInt(this.debtNumber),
+      price: this.debtSum,
+    }
+    this.sendService.createCustomeray(data).then((res: any) => {
+      console.log(res);
+if(!res.Errors){
+  ID=res.ID
+}
+      this.router.navigate(['/pay'], { queryParams: { FullName: this.creditName, Email: this.pasportNumber, Phone: this.debtNumber, Sum: sum,ID:res.ID } });
 
-  }
+    })
 
-  paypel() {
+
+
 
   }
 
