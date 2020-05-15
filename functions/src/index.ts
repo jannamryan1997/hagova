@@ -181,6 +181,7 @@ export const payStatus = functions.https.onRequest((req, res) => {
 	})
 });
 
+
 const doPay = (request: any): Promise<any> => {
 	return new Promise((resolve, reject) => {
 		/*Local constible */
