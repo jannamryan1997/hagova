@@ -16,7 +16,7 @@ export class PayPalComponent implements OnInit {
     public payPalConfig;
 
 
-
+	public user
     public email: "1";
     public fullName: "fdfdfd";
     public phone: "2";
