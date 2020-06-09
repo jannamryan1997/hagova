@@ -2,17 +2,17 @@ import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import * as paypal from 'paypal-rest-sdk';
 import * as soap from "soap";
-const serviceAccount:any = {
-    "type": "service_account",
-    "project_id": "hagove-2dee7",
-    "private_key_id": "6ed1f934707c611bf897b839a0453765de3ef464",
-    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQClyboIWW0Lashr\nrt+fxmeRJb6sqqmgxsJVAILehUIZkoIWySMr2VYIm3aJ2dnE0iZ5e+8reJzK2rE1\nHlol2LqmV/vCYEw08FSNrYNb82k9sdkHC+Jpf8T7BZe+oT+bAVHMsOvK7pBNDFU+\nCKSW2jXiQccvAsxsRGmrrJT1Pq9UepasBxYGCBf4unf55W7txY8NUmsmPo9OfgFi\nKh6AKLZ7meFNzz2ud/42L6jfZtNtt9ZbHQNva2WWE3Als/CjMabUTJxxCwsmPqbT\nx7W4eN83dR7OTZXxCjWK6ybUdUZr40I3EpTJwQ1e2gGHGG75KhCTCdx90WM3gacR\nBI00UjaXAgMBAAECggEACdOZo7oNNRKIu507YwCDDf7jPN/GuyFczmX/28mhP9vH\nuysD2ysAJvV0Arq3ZiugnS3D4Ns+y+VHgKMCa+DbO1XWtdA4ZCDkmhsxQId+cuoy\nN3E0Y9VvawOLWYC8QOdEnnHUIAyg3/g9qzYe71QSwozsjfRIApjRfJv3nkuvX73l\n9tg4VQ83O56lKqCJF2ceJNACNRwW9XRRS6hgSg7Dj07USbl5uHA6XjwXdEGFvtjr\n3uCwjtgeju85t0+94BwO4ZXj3S2SSI+ekgNkKoNLjxG4ApF2rvGh2gmKHlV+TmvL\nVDuvHhII5vx6lnpgyglAq+EKsHPEFlmxeS1NIHdktQKBgQDT6NWeqDdNVceHJ323\nL8ddd6K6tSc3HYHQTguu57E0A0Ikp7C1ALgt4ueJaw/FBIc4EARZ3lJo/WbDPj6q\nYNXW873bSk6lPFrjgtlSKGnnpxE2dPyRO75k89e8F0MRHU47RckBH9Qsp3hTDoME\nNfFVLPWYFXRusrtY08kYyPYKBQKBgQDISEWnZCwMQPWXRlkbGEyVCW9M/IWxyJOe\nxpKgVc1weU49laBM6RC47qaMofq55iGDHyKVwr5o1qM1Wo91Y74sOw61WaZ0eC45\ngRvZolld4yVkuMdUnyHIPgPi9FEKo/PpL3+51nc1utD8mhCKAZiS/dbwpTo4wOSA\nM8HPlBY06wKBgBzaF7O5XYY3BqqdMt2tMKzGLC7VmVhEuTb+WVLgEt1tECVje4i5\nZ1pACZxJKmV9v1dfvufpgDjxP3uXzvptos/YceIYlOqkdA+D8kjgXcL/mTVb6kNv\n6fVeyeG/HQ+IeO1TDBIOHlpSFuzgDfCV05zwOSQSz75+sUlf1IJ+YhltAoGAW3nO\n/oZdK/ebdE14M0zk5YlaoZIQykOvUOynWb32yDFPkAdAIQCuV5kAzujIqJG4qrfU\nxwwchavK/XpwXZCB8pfCvwfEZBvkGPWkL8HcCWrO0HMo77iC6H+SrN0kCrUZmV7N\neqa+6fZ6r3T6qt3RvwlbW6xLrFJFy1xYYCPmBKMCgYAj8YlYPkdhTMvURCe0KF3p\n1D7P/IyH2d9cdDs6+F5eUnJ1RltYPryJiwMz3pm+hZ8Mx+fpUug5yNJhTeZ4PSge\nILI9n6HpAdJGtu1LVssDSpqdFjy6xNqbSxF2hYqGVRV0u3S9U1BDRPNQImQpvRjO\n68IFmkSesQT3iBzUFiIJlA==\n-----END PRIVATE KEY-----\n",
-    "client_email": "firebase-adminsdk-n3xeq@hagove-2dee7.iam.gserviceaccount.com",
-    "client_id": "114234327249132969899",
-    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-    "token_uri": "https://oauth2.googleapis.com/token",
-    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-n3xeq%40hagove-2dee7.iam.gserviceaccount.com"
+const serviceAccount: any = {
+	"type": "service_account",
+	"project_id": "hagove-2dee7",
+	"private_key_id": "6ed1f934707c611bf897b839a0453765de3ef464",
+	"private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQClyboIWW0Lashr\nrt+fxmeRJb6sqqmgxsJVAILehUIZkoIWySMr2VYIm3aJ2dnE0iZ5e+8reJzK2rE1\nHlol2LqmV/vCYEw08FSNrYNb82k9sdkHC+Jpf8T7BZe+oT+bAVHMsOvK7pBNDFU+\nCKSW2jXiQccvAsxsRGmrrJT1Pq9UepasBxYGCBf4unf55W7txY8NUmsmPo9OfgFi\nKh6AKLZ7meFNzz2ud/42L6jfZtNtt9ZbHQNva2WWE3Als/CjMabUTJxxCwsmPqbT\nx7W4eN83dR7OTZXxCjWK6ybUdUZr40I3EpTJwQ1e2gGHGG75KhCTCdx90WM3gacR\nBI00UjaXAgMBAAECggEACdOZo7oNNRKIu507YwCDDf7jPN/GuyFczmX/28mhP9vH\nuysD2ysAJvV0Arq3ZiugnS3D4Ns+y+VHgKMCa+DbO1XWtdA4ZCDkmhsxQId+cuoy\nN3E0Y9VvawOLWYC8QOdEnnHUIAyg3/g9qzYe71QSwozsjfRIApjRfJv3nkuvX73l\n9tg4VQ83O56lKqCJF2ceJNACNRwW9XRRS6hgSg7Dj07USbl5uHA6XjwXdEGFvtjr\n3uCwjtgeju85t0+94BwO4ZXj3S2SSI+ekgNkKoNLjxG4ApF2rvGh2gmKHlV+TmvL\nVDuvHhII5vx6lnpgyglAq+EKsHPEFlmxeS1NIHdktQKBgQDT6NWeqDdNVceHJ323\nL8ddd6K6tSc3HYHQTguu57E0A0Ikp7C1ALgt4ueJaw/FBIc4EARZ3lJo/WbDPj6q\nYNXW873bSk6lPFrjgtlSKGnnpxE2dPyRO75k89e8F0MRHU47RckBH9Qsp3hTDoME\nNfFVLPWYFXRusrtY08kYyPYKBQKBgQDISEWnZCwMQPWXRlkbGEyVCW9M/IWxyJOe\nxpKgVc1weU49laBM6RC47qaMofq55iGDHyKVwr5o1qM1Wo91Y74sOw61WaZ0eC45\ngRvZolld4yVkuMdUnyHIPgPi9FEKo/PpL3+51nc1utD8mhCKAZiS/dbwpTo4wOSA\nM8HPlBY06wKBgBzaF7O5XYY3BqqdMt2tMKzGLC7VmVhEuTb+WVLgEt1tECVje4i5\nZ1pACZxJKmV9v1dfvufpgDjxP3uXzvptos/YceIYlOqkdA+D8kjgXcL/mTVb6kNv\n6fVeyeG/HQ+IeO1TDBIOHlpSFuzgDfCV05zwOSQSz75+sUlf1IJ+YhltAoGAW3nO\n/oZdK/ebdE14M0zk5YlaoZIQykOvUOynWb32yDFPkAdAIQCuV5kAzujIqJG4qrfU\nxwwchavK/XpwXZCB8pfCvwfEZBvkGPWkL8HcCWrO0HMo77iC6H+SrN0kCrUZmV7N\neqa+6fZ6r3T6qt3RvwlbW6xLrFJFy1xYYCPmBKMCgYAj8YlYPkdhTMvURCe0KF3p\n1D7P/IyH2d9cdDs6+F5eUnJ1RltYPryJiwMz3pm+hZ8Mx+fpUug5yNJhTeZ4PSge\nILI9n6HpAdJGtu1LVssDSpqdFjy6xNqbSxF2hYqGVRV0u3S9U1BDRPNQImQpvRjO\n68IFmkSesQT3iBzUFiIJlA==\n-----END PRIVATE KEY-----\n",
+	"client_email": "firebase-adminsdk-n3xeq@hagove-2dee7.iam.gserviceaccount.com",
+	"client_id": "114234327249132969899",
+	"auth_uri": "https://accounts.google.com/o/oauth2/auth",
+	"token_uri": "https://oauth2.googleapis.com/token",
+	"auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+	"client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-n3xeq%40hagove-2dee7.iam.gserviceaccount.com"
 }
 
 admin.initializeApp({
@@ -170,7 +170,7 @@ export const payment = functions.https.onCall(async (data, context) => {
 })
 
 
-async function setInvoce(data:any){
+async function setInvoce(data: any) {
 	return new Promise((resolve, reject) => {
 		/**** Module ****/
 		const soap = require('soap');
@@ -210,27 +210,27 @@ async function setInvoce(data:any){
 
 				/*Enmu type*/
 
-	
+
 				/*Payments*/
 
 				/*Item*/
 
-			
+
 				/*Email Associated*/
-				let AssociatedEmail= [
-						{
-							"Mail": "vano.varderesyan94@gmail.com",
-							"IsUserMail": false
-						},
-						{
-							"Mail": data.email,
-							"IsUserMail": false
-						},
-						{
-							"Mail":"asaf@invoice4u.co.il",
-							"IsUserMail":false
-						 },
-					]
+				let AssociatedEmail = [
+					{
+						"Mail": "vano.varderesyan94@gmail.com",
+						"IsUserMail": false
+					},
+					{
+						"Mail": data.email,
+						"IsUserMail": false
+					},
+					{
+						"Mail": "asaf@invoice4u.co.il",
+						"IsUserMail": false
+					},
+				]
 
 
 				/*Document Parameter*/
@@ -254,16 +254,16 @@ async function setInvoce(data:any){
 					},
 					token: result.VerifyLoginResult
 				}
-				fetch('https://apiqa.invoice4u.co.il/Services/ApiService.svc/CreateDocument',{
-					method:"POST",
-					body:JSON.stringify(document),
-					headers:{"Content-Type":"application/json"}
-				}).then((res)=>{
+				fetch('https://apiqa.invoice4u.co.il/Services/ApiService.svc/CreateDocument', {
+					method: "POST",
+					body: JSON.stringify(document),
+					headers: { "Content-Type": "application/json" }
+				}).then((res) => {
 					//console.log();
 					return res.json()
-				}).then(res=>{
+				}).then(res => {
 					resolve({ result: res['d'] })
-				}).catch((error)=>{
+				}).catch((error) => {
 					reject(error)
 				})
 			});
@@ -275,18 +275,88 @@ async function setInvoce(data:any){
 export const payStatus = functions.https.onRequest((req, res) => {
 	return new Promise((resolve, reject) => {
 		console.log(req.query)
-		if(req.query.response == 'succses'){
-			setInvoce(req.query).then((res)=>{
-				resolve("ok")
-			}).catch((err)=>{
-				reject(err)
-			})
-		}else{
-			reject('false')
-		}
-	})
-});
+		if (req.query.response == 'succses') {
+			setInvoce(req.query).then((result) => {
+				res.send(`
+			<!DOCTYPE html>
+				<html>
+				<head>
+				<meta name="viewport" content="width=device-width, initial-scale=1">
+				<style>
+				.main{
+				display:flex;
+				width:100%;
+				height:100vh;
+				}
 
+				.alert {
+				padding: 20px;
+				background-color:green;
+				color: white;
+				display: flex;
+				width:50%;
+				margin:auto;
+				}
+				.text{
+				margin:auto;
+				}
+
+				</style>
+				</head>
+				<body>
+				<div class="main">
+				<div class="alert">
+				<span class="text">בהצלחה!</span>
+				</div>
+				</div>
+
+				</body>
+				</html>`
+				)
+			}).catch((err) => {
+				res.send(`
+			<!DOCTYPE html>
+				<html>
+				<head>
+				<meta name="viewport" content="width=device-width, initial-scale=1">
+				<style>
+				.main{
+				display:flex;
+				width:100%;
+				height:100vh;
+				}
+
+				.alert {
+				padding: 20px;
+				background-color:red;
+				color: white;
+				display: flex;
+				width:50%;
+				margin:auto;
+				}
+				.text{
+				margin:auto;
+				}
+
+				</style>
+				</head>
+				<body>
+				<div class="main">
+				<div class="alert">
+				<span class="text">נכשל!</span>
+				</div>
+				</div>
+
+				</body>
+				</html> 
+			`)
+			})
+
+		} else {
+
+		};
+	})
+})
 
 const doPay = (request: any): Promise<any> => {
 	return new Promise((resolve, reject) => {
@@ -371,22 +441,22 @@ export const createCustomer = functions.https.onCall(async (data, context) => {
 					if (err2) {
 						reject(err2)
 					}
-					
+
 					let _res = result2.CreateCustomerResult
 					if (!_res.Errors) {
-				
+
 
 
 						admin.database().ref('transactions/').push({
 							price: data.price,
 							paymentUserData: _res
 						}).then((res: any) => {
-							 resolve(_res);
+							resolve(_res);
 						}).catch((err9: any) => {
 							reject(err9)
 						})
 					} else {
-						 resolve(_res);
+						resolve(_res);
 
 					}
 
