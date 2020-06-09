@@ -86,7 +86,6 @@ h6 {
 
 .paypal-button-container {
   border-radius: 4px;
-  margin-bottom: 17px;
   background: #ffc439;
   height: 55px;
   min-height: 40px;
@@ -103,4 +102,8 @@ h6 {
   &:hover{
     opacity: 0.8 !important;
   }
+}
+.ui-button-success{
+  margin: 10px !important;
+    height: 55px !important;
 }
