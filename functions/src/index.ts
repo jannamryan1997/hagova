@@ -162,19 +162,125 @@ export const payment = functions.https.onCall(async (data, context) => {
 		paymentsNum: 1,
 		userEmail: "test@test.com",
 		userPassword: "123456",
-		returnUrl: "https://us-central1-hagove-2dee7.cloudfunctions.net/payStatus?"
+		returnUrl: `https://us-central1-hagove-2dee7.cloudfunctions.net/payStatus?price=${data.Sum}&clientId=${data.clientId}&email=${data.email}`
 	};
 	const result = await doPay(request);
 
 	return { success: true, result };
 })
 
+
+async function setInvoce(data:any){
+	return new Promise((resolve, reject) => {
+		/**** Module ****/
+		const soap = require('soap');
+		const uuid = require('node-uuid');
+		const uuid1 = uuid.v1();
+
+
+
+		/*Local Varible*/
+
+		const url = 'https://apiqa.invoice4u.co.il/Services/ApiService.svc?singleWsdl';
+		const soapHeader = '<Content-Type>application/json</Content-Type>'//xml string for header
+
+		/*using Soap CLient*/
+		soap.createClient(url, function (err: any, client: any) {
+			client.addSoapHeader(soapHeader);
+
+			/*Start LoginFunctions*/
+			let args: any = {
+				email: "Test@test.com",
+				password: "123456"
+			};
+
+			client.VerifyLogin(args, function (err: any, result: any) {
+				if (err) {
+					console.log(err, '386')
+
+					reject(err)
+				}
+				args = {
+					token: result.VerifyLoginResult
+				};
+
+				/*End LoginFunctions*/
+
+				/*Start InvoiceReceipt for RegularCustomer*/
+
+				/*Enmu type*/
+
+	
+				/*Payments*/
+
+				/*Item*/
+
+			
+				/*Email Associated*/
+				let AssociatedEmail= [
+						{
+							"Mail": "vano.varderesyan94@gmail.com",
+							"IsUserMail": false
+						},
+						{
+							"Mail": data.email,
+							"IsUserMail": false
+						},
+						{
+							"Mail":"asaf@invoice4u.co.il",
+							"IsUserMail":false
+						 },
+					]
+
+
+				/*Document Parameter*/
+				let document = {
+					doc: {
+						ClientID: data.clientId,
+						Currency: "ILS",
+						DocumentType: 1,
+						Items: [{
+							"Name": "tes_product",
+							"Price": data.price,
+							"Quantity": 1
+						}],
+						// Payments: Payments,
+						RoundAmount: 0,
+						// you can round the total 
+						Subject: "Document Subject",
+						TaxPercentage: 17,
+						AssociatedEmails: AssociatedEmail,
+						ApiIdentifier: uuid1,
+					},
+					token: result.VerifyLoginResult
+				}
+				fetch('https://apiqa.invoice4u.co.il/Services/ApiService.svc/CreateDocument',{
+					method:"POST",
+					body:JSON.stringify(document),
+					headers:{"Content-Type":"application/json"}
+				}).then((res)=>{
+					//console.log();
+					return res.json()
+				}).then(res=>{
+					resolve({ result: res['d'] })
+				}).catch((error)=>{
+					reject(error)
+				})
+			});
+		});
+	})
+}
+
+
 export const payStatus = functions.https.onRequest((req, res) => {
 	return new Promise((resolve, reject) => {
 		console.log(req.query)
 		if(req.query.response == 'succses'){
-			resolve("ok")
-
+			setInvoce(req.query).then((res)=>{
+				resolve("ok")
+			}).catch((err)=>{
+				reject(err)
+			})
 		}else{
 			reject('false')
 		}
@@ -370,11 +476,11 @@ export const invoiceReceipt = functions.https.onCall(async (data, context) => {
 				{
 					AssociatedEmail: [
 						{
-							Mail: "test@test.com",
-							IsUserMail: true
+							Mail: "vano.varderesyan94@gmail.com",
+							IsUserMail: false
 						},
 						{
-							Mail: "customermail@mail.com",
+							Mail: "vano.varderesyan@mail.ru",
 							IsUserMail: false
 						}
 					]
@@ -415,6 +521,7 @@ export const invoiceReceipt = functions.https.onCall(async (data, context) => {
 		});
 	})
 });
+
 
 
 export const paymentPay = functions.https.onCall(async (data, context) => {
