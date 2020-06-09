@@ -23,10 +23,10 @@ export class DebtComponent implements OnInit, OnDestroy {
   user_data: CsvUserData;
 
   self_text: string = "";
-  debtName: string = "janna";
-  creditName: string = "mryan";
-  pasportNumber: string = "janna.mryan@mail.ru";
-  debtNumber: string = "12345";
+  debtName: string = "";
+  creditName: string = "";
+  pasportNumber: string = "";
+  debtNumber: string = "";
   debtSum: string = "";
   debtSumAgorot: string = "";
 

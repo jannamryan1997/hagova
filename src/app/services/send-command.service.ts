@@ -13,7 +13,7 @@ export class SendCommandService {
     private fun: AngularFireFunctions,
     private db:AngularFirestore,
   ) { }
-   async SendPayment(data:PaymentData):Promise<any> {
+   async SendPayment(data):Promise<any> {
 	const callable = this.fun.httpsCallable('payment');
     const res = await callable(data).toPromise()
     return res;

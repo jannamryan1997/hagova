@@ -51,11 +51,12 @@ export class PayPalComponent implements OnInit {
 
     public meshulam(): void {
 
-        const data: PaymentData = {
+        const data = {
             FullName: this.fullName,
-            Email: this.email,
+            email: this.email,
             Phone: this.phone,
             Sum: parseInt(this.sum),
+            clientId:this.id,
         }
         this.sendService.SendPayment(data).then((res: any) => {
             console.log(res,"resultat meshulam");
@@ -64,6 +65,8 @@ export class PayPalComponent implements OnInit {
                 this._router.navigate(["/payment"], { queryParams: { url: res.result.ClearingRedirectUrl } });
             }
         })
+        console.log("dddddddddddddddddddddd");
+        
     }
 
 
