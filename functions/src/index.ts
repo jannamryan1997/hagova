@@ -173,7 +173,6 @@ export const payment = functions.https.onCall(async (data, context) => {
 async function setInvoce(data: any) {
 	return new Promise((resolve, reject) => {
 		/**** Module ****/
-		const soap = require('soap');
 		const uuid = require('node-uuid');
 		const uuid1 = uuid.v1();
 
@@ -185,8 +184,8 @@ async function setInvoce(data: any) {
 		const soapHeader = '<Content-Type>application/json</Content-Type>'//xml string for header
 
 		/*using Soap CLient*/
-		soap.createClient(url, function (err: any, client: any) {
-			client.addSoapHeader(soapHeader);
+		soap.createClient(url, function (err: any, _client: any) {
+			_client.addSoapHeader(soapHeader);
 
 			/*Start LoginFunctions*/
 			let args: any = {
@@ -194,11 +193,11 @@ async function setInvoce(data: any) {
 				password: "123456"
 			};
 
-			client.VerifyLogin(args, function (err: any, result: any) {
-				if (err) {
-					console.log(err, '386')
+			client.VerifyLogin(args, function (err_1: any, result: any) {
+				if (err_1) {
+					console.log(err_1, '386')
 
-					reject(err)
+					reject(err_1)
 				}
 				args = {
 					token: result.VerifyLoginResult
@@ -217,7 +216,7 @@ async function setInvoce(data: any) {
 
 
 				/*Email Associated*/
-				let AssociatedEmail = [
+				const AssociatedEmail = [
 					{
 						"Mail": "vano.varderesyan94@gmail.com",
 						"IsUserMail": false
@@ -234,7 +233,7 @@ async function setInvoce(data: any) {
 
 
 				/*Document Parameter*/
-				let document = {
+				const document = {
 					doc: {
 						ClientID: data.clientId,
 						Currency: "ILS",
@@ -275,7 +274,7 @@ async function setInvoce(data: any) {
 export const payStatus = functions.https.onRequest((req, res) => {
 	return new Promise((resolve, reject) => {
 		console.log(req.query)
-		if (req.query.response == 'succses') {
+		if (req.query.response === 'succses') {
 			setInvoce(req.query).then((result) => {
 				res.send(`
 			<!DOCTYPE html>
@@ -353,7 +352,42 @@ export const payStatus = functions.https.onRequest((req, res) => {
 			})
 
 		} else {
+			res.send(`
+			<!DOCTYPE html>
+				<html>
+				<head>
+				<meta name="viewport" content="width=device-width, initial-scale=1">
+				<style>
+				.main{
+				display:flex;
+				width:100%;
+				height:100vh;
+				}
 
+				.alert {
+				padding: 20px;
+				background-color:red;
+				color: white;
+				display: flex;
+				width:50%;
+				margin:auto;
+				}
+				.text{
+				margin:auto;
+				}
+
+				</style>
+				</head>
+				<body>
+				<div class="main">
+				<div class="alert">
+				<span class="text">נכשל!</span>
+				</div>
+				</div>
+
+				</body>
+				</html> 
+			`)
 		};
 	})
 })
@@ -442,7 +476,7 @@ export const createCustomer = functions.https.onCall(async (data, context) => {
 						reject(err2)
 					}
 
-					let _res = result2.CreateCustomerResult
+					const _res = result2.CreateCustomerResult
 					if (!_res.Errors) {
 
 
@@ -522,7 +556,7 @@ export const invoiceReceipt = functions.https.onCall(async (data, context) => {
 				// 	InvoiceShip: 8,
 				// 	Deposits: 9,
 				// };
-				let currdatetime = new Date();
+				const currdatetime = new Date();
 				/*Payments*/
 				const Payments = {
 					Payments: {
@@ -542,7 +576,7 @@ export const invoiceReceipt = functions.https.onCall(async (data, context) => {
 					}
 				};
 				/*Email Associated*/
-				let AssociatedEmail =
+				const AssociatedEmail =
 				{
 					AssociatedEmail: [
 						{
