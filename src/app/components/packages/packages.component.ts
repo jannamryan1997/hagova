@@ -80,4 +80,27 @@ export class PackagesComponent implements OnInit {
     this.error_text = "";
     this.error_disp = false;
   }
+  register() {
+    this.router.navigate(["/register"]);
+  }
+
+  logout() {
+    this.auth.logout();
+  }
+
+  login() {
+    this.router.navigate(["/login"]);
+  }
+
+  myAccount() {
+    this.router.navigate(["/my-account"]);
+  }
+
+  about() {
+    this.router.navigate(["/about"]);
+  }
+
+  choosePackage() {
+    this.router.navigate(["/packages"]);
+  }
 }

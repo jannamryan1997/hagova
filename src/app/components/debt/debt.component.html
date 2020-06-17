@@ -1,4 +1,4 @@
-<mat-toolbar color="primary">
+<!-- <mat-toolbar color="primary">
 	<app-logo></app-logo>
 	<mat-toolbar-row class="header-raw">
 		<div class="registration-button">
@@ -21,7 +21,7 @@
 			<button class="btn" *ngIf="!user" (click)="login()">כניסה</button>
 		</div>
 	</mat-toolbar-row>
-</mat-toolbar>
+</mat-toolbar> -->
 <div class="details" *ngIf="user">
 	<!-- spacer -->
 	<div></div>
@@ -68,7 +68,7 @@
 						</div>
 						<div class="row">
 							<div class="col-md-12 mb-2 marg-top-10">
-								<label for="pasportNumber">ב. ת.ז. חייב</label>
+								<label for="pasportNumber">אימייל</label>
 								<input [(ngModel)]="pasportNumber" #pasportNumberControl="ngModel" name="pasportNumber"
 									type="text" class="form-control" id="pasportNumber" required />
 									<div class="comment-text" *ngIf="!pasportNumberControl.valid">

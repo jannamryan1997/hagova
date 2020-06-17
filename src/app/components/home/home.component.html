@@ -1,45 +1,10 @@
-<mat-toolbar color="primary">
-  <app-logo></app-logo>
-  <mat-toolbar-row class="header-raw">
-    <div class="registration-button">
-		<button class="btn" (click)="chooseDebt()"  style="margin-right: 15px;">
-			חוב
-		</button>
-      <button class="btn" (click)="choosePackage()" style="margin-right: 15px;">
-        הנחה
-      </button>
-      <button class="btn" (click)="about()" style="margin-right: 15px;">
-        אודות
-      </button>
-      <button
-        class="btn "
-        *ngIf="!user"
-        style="margin-right: 15px;"
-        (click)="register()"
-      >
-        הרשמה
-      </button>
-      <button
-        class="btn"
-        *ngIf="user"
-        (click)="myAccount()"
-        style="margin-right: 15px;"
-      >
-        החשבון שלי
-      </button>
-      <button class="btn" *ngIf="user" (click)="logout()">יציאה</button>
-      <button class="btn" *ngIf="!user" (click)="login()">כניסה</button>
-    </div>
-  </mat-toolbar-row>
-</mat-toolbar>
-<div class="details" *ngIf="user">
-  <!-- spacer -->
+
+<!-- <div class="details" *ngIf="user">
   <div></div>
-  <!-- end spacer -->
   <div class="details-user">
     <span class="hello-user">שלום:</span> {{ user?.displayName }}
   </div>
-</div>
+</div> -->
 <hr />
 <div class="details" *ngIf="user">
   <!-- spacer -->

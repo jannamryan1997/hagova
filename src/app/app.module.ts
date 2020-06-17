@@ -35,6 +35,7 @@ import { DebtComponent } from './components/debt/debt.component';
 import { PayPalComponent } from './components/payPal/payPal.component';
 import { CookieModule } from 'ngx-cookie';
 import { SuccessGuard } from './guard/success.guard';
+import { HeaderComponent } from './layout/header/header.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -49,7 +50,8 @@ import { SuccessGuard } from './guard/success.guard';
     AboutComponent,
     PaymentComponent,
     DebtComponent,
-    PayPalComponent
+    PayPalComponent,
+    HeaderComponent
 
   ],
   imports: [

@@ -1,0 +1,16 @@
+.header-raw {
+    display: flex;
+    flex-direction: row;
+  
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .registration-button {
+    .btn {
+      color: white;
+    }
+    .btn:hover {
+      color: rgb(0, 0, 0);
+    }
+  }
