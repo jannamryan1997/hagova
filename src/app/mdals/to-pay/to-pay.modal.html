@@ -1,0 +1,19 @@
+<div class="to-pay-content">
+    <form [formGroup]="payFormGroup">
+		<div class="row marg-top-10">
+            <div class="col-md-12 mb-2">
+                <label for="debtSum"> אימייל </label>
+                <div style="display: flex; flex-direction: row;">
+                    <input formControlName="email"  placeholder="אימייל"
+                        name="debtSum" type="text" class="form-control" id="debtSum" />
+                </div>
+            </div>
+        </div>
+        <div class="row sub-button">
+            <div class="col-md-12">
+                <button type="button" [disabled]="payFormGroup.invalid" pButton style="margin-left: 10px;" type="submit"  label="לתשלום" class="ui-button-success" (click)='murshulam()'></button>
+            </div>
+        </div>
+    </form>
+    
+</div>

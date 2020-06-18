@@ -5,6 +5,8 @@ import { CsvUserData } from "../../models/csvmodel";
 import { ConfirmationService } from "primeng/api";
 import { SendCommandService } from "src/app/services/send-command.service";
 import { Subscription } from "rxjs";
+import { ToPayModal } from 'src/app/mdals/to-pay/to-pay.modal';
+import { MatDialog } from '@angular/material';
 
 @Component({
   selector: "app-home",
@@ -65,7 +67,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     private auth: AuthService,
     private router: Router,
     private confirmationService: ConfirmationService,
-    private sendService: SendCommandService
+    private sendService: SendCommandService,
+    private _dialog: MatDialog,
   ) {
     this.today.setDate(this.today.getDate());
   }
@@ -94,34 +97,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
-  register() {
-    this.router.navigate(["/register"]);
-  }
 
-  logout() {
-    this.auth.logout();
-  }
-
-  login() {
-    this.router.navigate(["/login"]);
-  }
-
-  myAccount() {
-    this.router.navigate(["/my-account"]);
-  }
-
-  about() {
-    this.router.navigate(["/about"]);
-  }
-
-  choosePackage() {
-    this.router.navigate(["/packages"]);
-  }
-  chooseDebt() {
-    this.router.navigate(["/debt"]);
-  }
-
-  
   sendLetter(frm) {
     console.log(frm);
     this.user_data.firstName = frm.value.firstName;
@@ -193,14 +169,14 @@ export class HomeComponent implements OnInit, OnDestroy {
         if (this.checkedSms == true) {
           let text: string =
             `\n${this.user_data.firstName +
-              " " +
-              this.user_data.lastName} שלום,\n` +
+            " " +
+            this.user_data.lastName} שלום,\n` +
             `בשם מרשי ${
-              this.user.displayName
+            this.user.displayName
             }, הנך נדרש לשלם סך של ${this.numberWithCommas(
               this.user_data.debtSum
             )}.${this.user_data.debtSumAgorot} שקלים בעבור השירות ש${
-              this.user.displayName
+            this.user.displayName
             } ביצע עבורך בתאריך ${this.format(this.user_data.debtDate)}.\n` +
             "הנך נדרש לשלם סך זה בהקדם. " +
             `במידה ולא תשלם, ${this.user.displayName} שומר לעצמו את האפשרות לנקוט בהליכים משפטיים נגדך.\n` +
@@ -231,8 +207,8 @@ export class HomeComponent implements OnInit, OnDestroy {
           } else {
             text =
               `\n${this.user_data.firstName +
-                " " +
-                this.user_data.lastName} שלום,\n` +
+              " " +
+              this.user_data.lastName} שלום,\n` +
               `להזכירך, עליך לשלם סך של ${this.numberWithCommas(
                 this.user_data.debtSum
               )}.${this.user_data.debtSumAgorot} שקלים, עד ליום ${this.format(
@@ -431,7 +407,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     console.log(event);
   }
 
-  sendEmail() {}
+  sendEmail() { }
 
   showGoodDialog(text: string) {
     this.success_display = text;
@@ -482,4 +458,14 @@ export class HomeComponent implements OnInit, OnDestroy {
   private _to2digit(n: number) {
     return ("00" + n).slice(-2);
   }
+
+
+  // public mushulam(): void {
+  //   this._dialog.open(ToPayModal, {
+  //     width: "560px",
+  //     data: {
+  //       sum: this.debtSum,
+  //     }
+  //   })
+  // }
 }

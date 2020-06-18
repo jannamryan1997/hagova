@@ -3,7 +3,8 @@ import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { HttpClientModule } from "@angular/common/http";
-
+import {MatDialogModule} from '@angular/material/dialog';
+import { CommonModule } from '@angular/common';
 //components
 import { AppComponent } from "./app.component";
 import { LoginComponent } from "./components/login/login.component";
@@ -36,6 +37,8 @@ import { PayPalComponent } from './components/payPal/payPal.component';
 import { CookieModule } from 'ngx-cookie';
 import { SuccessGuard } from './guard/success.guard';
 import { HeaderComponent } from './layout/header/header.component';
+import { ToPayModal } from './mdals/to-pay/to-pay.modal';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -51,7 +54,8 @@ import { HeaderComponent } from './layout/header/header.component';
     PaymentComponent,
     DebtComponent,
     PayPalComponent,
-    HeaderComponent
+    HeaderComponent,
+    ToPayModal
 
   ],
   imports: [
@@ -67,10 +71,13 @@ import { HeaderComponent } from './layout/header/header.component';
     PrimengModule,
     HttpClientModule,
     AngularFireFunctionsModule,
+    CommonModule,
     NgxPayPalModule,
+    MatDialogModule,
     CookieModule.forRoot(),
   ],
   providers: [{ provide: MAT_DATE_LOCALE, useValue: "en-GB" },SuccessGuard],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents:[ToPayModal]
 })
 export class AppModule { }
