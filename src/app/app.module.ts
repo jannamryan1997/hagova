@@ -5,6 +5,8 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { HttpClientModule } from "@angular/common/http";
 import {MatDialogModule} from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+
 //components
 import { AppComponent } from "./app.component";
 import { LoginComponent } from "./components/login/login.component";
@@ -74,6 +76,7 @@ import { ToPayModal } from './mdals/to-pay/to-pay.modal';
     CommonModule,
     NgxPayPalModule,
     MatDialogModule,
+    MatProgressSpinnerModule,
     CookieModule.forRoot(),
   ],
   providers: [{ provide: MAT_DATE_LOCALE, useValue: "en-GB" },SuccessGuard],

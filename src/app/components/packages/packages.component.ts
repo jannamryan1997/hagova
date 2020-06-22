@@ -7,6 +7,7 @@ import { PaymentData } from 'src/app/models/paymentmodel';
 import { SendCommandService } from 'src/app/services/send-command.service';
 import { MatDialog } from '@angular/material';
 import { ToPayModal } from 'src/app/mdals/to-pay/to-pay.modal';
+import { CookieService } from 'ngx-cookie';
 @Component({
   selector: 'app-packages',
   templateUrl: './packages.component.html',
@@ -16,9 +17,9 @@ export class PackagesComponent implements OnInit {
 
   user: firebase.User;
   user_sub: Subscription;
-
   error_text: string;
   error_disp: boolean = false;
+public loading:boolean=false;
 
   constructor(
     private auth: AuthService,
@@ -26,7 +27,8 @@ export class PackagesComponent implements OnInit {
     private fun: AngularFireFunctions,
     private sendService: SendCommandService,
     private _dialog: MatDialog,
-
+    private _coolieService: CookieService,
+    private _router: Router,
   ) { }
 
   ngOnInit() {
@@ -58,6 +60,8 @@ export class PackagesComponent implements OnInit {
   // }
 
   public sendPayment(sum: number) {
+    let userEmail: string;
+    userEmail = this._coolieService.get('userEmail');
     // const data:PaymentData = { 
     // 	FullName:"karine karapeyan",
     // 	Email:"jannamryan8@gmail.com",
@@ -71,13 +75,49 @@ export class PackagesComponent implements OnInit {
     // 	 }
     //  })
     //  return true;
-    this._dialog.open(ToPayModal, {
-      width: "560px",
-      data: {
-        sum: sum,
+    // this._dialog.open(ToPayModal, {
+    //   width: "560px",
+    //   data: {
+    //     sum: sum,
+    //   }
+    // })
+    if (!userEmail) {
+      this._router.navigate(['/login']);
+    }
+    else {
+      this._murshulam(sum, userEmail);
+    }
+
+  }
+
+
+  private _murshulam(sum: number, userEmail: string): void {
+    this.loading=true;
+    sum = sum;
+    console.log(sum);
+
+    let ID: number;
+    const data: any = {
+      name: null,
+      email: userEmail,
+      phone: null,
+      price: sum,
+    }
+    this.sendService.createCustomeray(data).then((res: any) => {
+   
+      console.log(res);
+      if (!res.Errors) {
+        ID = res.ID
+        this.loading=false;
       }
+      this._router.navigate(['/pay'], { queryParams: { FullName: data.name, Email: data.email, Phone: data.phone, Sum: sum, ID: res.ID } });
+
     })
   }
+
+
+
+
 
   ShowErrorDialog(text: string) {
     this.error_text = text;
