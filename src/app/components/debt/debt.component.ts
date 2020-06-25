@@ -1,7 +1,7 @@
 import { PaymentData } from './../../models/paymentmodel';
-import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Component, OnInit, OnDestroy, AfterViewChecked } from "@angular/core";
 import { AuthService } from "src/app/auth/auth.service";
-import { Router } from "@angular/router";
+import { Router, ActivatedRoute } from "@angular/router";
 import { CsvUserData } from "../../models/csvmodel";
 import { ConfirmationService } from "primeng/api";
 import { SendCommandService } from "src/app/services/send-command.service";
@@ -16,7 +16,9 @@ import {
   styleUrls: ["./debt.component.scss"],
   providers: [ConfirmationService]
 })
-export class DebtComponent implements OnInit, OnDestroy {
+export class DebtComponent implements OnInit, OnDestroy, AfterViewChecked {
+  params;
+  public hidedebtNumber: boolean = true;
   user: firebase.User;
   _error: string = "";
   costumer: any;
@@ -43,9 +45,29 @@ export class DebtComponent implements OnInit, OnDestroy {
     private auth: AuthService,
     private router: Router,
     private confirmationService: ConfirmationService,
-    private sendService: SendCommandService
+    private sendService: SendCommandService,
+    private _activatedRoute: ActivatedRoute,
   ) {
     this.today.setDate(this.today.getDate());
+    this._activatedRoute.queryParams.subscribe((params) => {
+      this.params = params;
+      console.log(params);
+      if (params && params.sum) {
+        this.debtSum = params.sum;
+      }
+      if (params && params.murshulam) {
+        this.hidedebtNumber = false;
+      }
+    })
+  }
+
+  ngAfterViewChecked(): void {
+    if (this.params && this.params.sum) {
+      this.debtSum = this.params.sum;
+    }
+    if (this.params && this.params.murshulam) {
+      this.hidedebtNumber = false;
+    }
   }
 
   ngOnInit() {
@@ -115,7 +137,7 @@ export class DebtComponent implements OnInit, OnDestroy {
 
   meshulam() {
     let sum = parseInt(this.debtSum) + parseInt(this.debtSumAgorot) * 0.01;
-    let ID:number;
+    let ID: number;
     const data: any = {
       name: this.creditName,
       email: this.pasportNumber,
@@ -124,10 +146,10 @@ export class DebtComponent implements OnInit, OnDestroy {
     }
     this.sendService.createCustomeray(data).then((res: any) => {
       console.log(res);
-if(!res.Errors){
-  ID=res.ID
-}
-      this.router.navigate(['/pay'], { queryParams: { FullName: this.creditName, Email: this.pasportNumber, Phone: this.debtNumber, Sum: sum,ID:res.ID } });
+      if (!res.Errors) {
+        ID = res.ID
+      }
+      this.router.navigate(['/pay'], { queryParams: { FullName: this.creditName, Email: this.pasportNumber, Phone: this.debtNumber, Sum: sum, ID: res.ID } });
 
     })
 

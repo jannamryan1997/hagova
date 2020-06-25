@@ -83,7 +83,7 @@
 									</div>
 							</div>
 						</div>
-						<div class="row">
+						<div class="row" *ngIf="hidedebtNumber">
 							<div class="col-md-12 mb-2 marg-top-10">
 								<label for="debtNumber">ד. מס' הזמנה</label>
 								<input [(ngModel)]="debtNumber" #debtNumberControl="ngModel" name="debtNumber" type="text"

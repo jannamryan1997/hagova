@@ -81,13 +81,10 @@ public loading:boolean=false;
     //     sum: sum,
     //   }
     // })
-    if (!userEmail) {
-      this._router.navigate(['/login']);
-    }
-    else {
-      this._murshulam(sum, userEmail);
-    }
 
+    this._router.navigate(['/debt'],{ queryParams: { sum: sum, murshulam:'true' } });
+  
+ 
   }
 
 
