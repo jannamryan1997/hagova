@@ -15,6 +15,7 @@ import { MatDialog } from '@angular/material';
   providers: [ConfirmationService]
 })
 export class HomeComponent implements OnInit, OnDestroy {
+  pasportName:string="";
   user: firebase.User;
   _error: string = "";
   costumer: any;
@@ -134,6 +135,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   confirm() {
+
+    console.log("gggggggggggg");
+    
     this.confirmationService.confirm({
       message: "האם אתה בטוח שברצונך לשלוח את הטופס?",
       accept: () => {

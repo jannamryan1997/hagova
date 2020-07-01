@@ -17,6 +17,7 @@ import {
   providers: [ConfirmationService]
 })
 export class DebtComponent implements OnInit, OnDestroy, AfterViewChecked {
+  public packageSum;
   params;
   public hidedebtNumber: boolean = true;
   user: firebase.User;
@@ -31,6 +32,7 @@ export class DebtComponent implements OnInit, OnDestroy, AfterViewChecked {
   debtNumber: string = "";
   debtSum: string = "";
   debtSumAgorot: string = "";
+  pasportName:string="";
 
   price: string
   _sms: number = 0;
@@ -53,7 +55,7 @@ export class DebtComponent implements OnInit, OnDestroy, AfterViewChecked {
       this.params = params;
       console.log(params);
       if (params && params.sum) {
-        this.debtSum = params.sum;
+        this.packageSum = params.sum;
       }
       if (params && params.murshulam) {
         this.hidedebtNumber = false;
@@ -136,16 +138,21 @@ export class DebtComponent implements OnInit, OnDestroy, AfterViewChecked {
   // }
 
   meshulam() {
+    
     let sum = parseInt(this.debtSum) + parseInt(this.debtSumAgorot) * 0.01;
     let ID: number;
     const data: any = {
       name: this.creditName,
       email: this.pasportNumber,
-      phone: parseInt(this.debtNumber),
-      price: this.debtSum,
+      phone: '',
+      price: this.packageSum,
+      pasport:this.pasportName,
     }
+    console.log(data);
+    
     this.sendService.createCustomeray(data).then((res: any) => {
-      console.log(res);
+      console.log(res,"kkkkkkkkkkkkkkkkk");
+      
       if (!res.Errors) {
         ID = res.ID
       }

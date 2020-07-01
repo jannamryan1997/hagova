@@ -49,13 +49,13 @@
 			<hr />
 			<div class="row mt-4">
 				<div class="col-12 ">
-					<form #userOwesData="ngForm" >
+					<form #userOwesData="ngForm">
 						<div class="row" *ngIf="_error != ''">
 							<div class="col-12 alert alert-danger">{{ _error }}</div>
 						</div>
 						<div class="row">
 							<div class="col-md-12 mb-2 marg-top-10">
-								<label for="debtName">א. שם החייב</label>
+								<label for="debtName"> שם החייב</label>
 								<input [(ngModel)]="debtName" #debtNameControl="ngModel" name="debtName" type="text"
 									class="form-control" id="debtName" required />
 								<div class="comment-text" *ngIf="!debtNameControl.valid">
@@ -63,37 +63,53 @@
 								</div>
 							</div>
 						</div>
+
+						<div class="row"> 
+							<div class="col-md-12 mb-2 marg-top-10">
+								<label for="debtName">ת.ז.</label>
+								<input [(ngModel)]="pasportName" #pasportNameControl="ngModel" name="pasportName" type="text"
+									class="form-control" id="pasportName" required />
+								<div class="comment-text" *ngIf="!pasportNameControl.valid">
+									נדרש<span class="must-filed">*</span>
+								</div>
+							</div>
+						</div>
+
+
+
+
+
 						<div class="row">
 							<div class="col-md-12 mb-2 marg-top-10">
 								<label for="pasportNumber">אימייל</label>
 								<input [(ngModel)]="pasportNumber" #pasportNumberControl="ngModel" name="pasportNumber"
 									type="text" class="form-control" id="pasportNumber" required />
-									<div class="comment-text" *ngIf="!pasportNumberControl.valid">
-										נדרש<span class="must-filed">*</span>
-									</div>
+								<div class="comment-text" *ngIf="!pasportNumberControl.valid">
+									נדרש<span class="must-filed">*</span>
+								</div>
 							</div>
 						</div>
 						<div class="row">
 							<div class="col-md-12 mb-2 marg-top-10">
-								<label for="creditName">ג. למי חייב</label>
-								<input [(ngModel)]="creditName" #creditNameControl="ngModel" name="creditName" type="text"
-									class="form-control" id="creditName" required />
-									<div class="comment-text" *ngIf="!creditNameControl.valid">
-										נדרש<span class="must-filed">*</span>
-									</div>
+								<label for="creditName"> למי חייב</label>
+								<input [(ngModel)]="creditName" #creditNameControl="ngModel" name="creditName"
+									type="text" class="form-control" id="creditName" required />
+								<div class="comment-text" *ngIf="!creditNameControl.valid">
+									נדרש<span class="must-filed">*</span>
+								</div>
 							</div>
 						</div>
 						<div class="row" *ngIf="hidedebtNumber">
 							<div class="col-md-12 mb-2 marg-top-10">
-								<label for="debtNumber">ד. מס' הזמנה</label>
-								<input [(ngModel)]="debtNumber" #debtNumberControl="ngModel" name="debtNumber" type="text"
-									class="form-control" id="debtNumber" required />
-									<div class="comment-text" *ngIf="!debtNumberControl.valid">
-										נדרש<span class="must-filed">*</span>
-									</div>
+								<label for="debtNumber"> מס' הזמנה</label>
+								<input [(ngModel)]="debtNumber" #debtNumberControl="ngModel" name="debtNumber"
+									type="text" class="form-control" id="debtNumber" required />
+								<div class="comment-text" *ngIf="!debtNumberControl.valid">
+									נדרש<span class="must-filed">*</span>
+								</div>
 							</div>
 						</div>
-						<div class="row marg-top-10">
+						<div class="row marg-top-10" *ngIf="hidedebtNumber">
 							<div class="col-md-12 mb-2">
 								<label for="debtSum"> סכום החוב</label>
 								<div style="display: flex; flex-direction: row;">
@@ -113,7 +129,8 @@
 						<div>
 							<div class="row sub-button">
 								<div class="col-md-12">
-									<button type="button" pButton style="margin-left: 10px;" type="submit"  label="לתשלום" class="ui-button-success" (click)='meshulam()'></button>
+									<button type="button" pButton style="margin-left: 10px;" type="submit"
+										label="לתשלום" class="ui-button-success" (click)='meshulam()'></button>
 								</div>
 							</div>
 						</div>

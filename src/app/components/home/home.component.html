@@ -125,6 +125,20 @@
               </div>
             </div>
 
+            <div class="row">
+							<div class="col-md-12 mb-2 marg-top-10">
+								<label for="debtName">ת.ז.</label>
+								<input [(ngModel)]="pasportName" #pasportNameControl="ngModel" name="pasportName" type="text"
+									class="form-control" id="pasportName" required />
+								<div class="comment-text" *ngIf="!pasportNameControl.valid">
+									נדרש<span class="must-filed">*</span>
+								</div>
+							</div>
+            </div>
+
+            
+            
+
             <div class="row marg-top-10">
               <div class="col-md-12 mb-2">
                 <label for="debtSum"> סכום החוב</label>
