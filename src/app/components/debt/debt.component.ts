@@ -32,7 +32,7 @@ export class DebtComponent implements OnInit, OnDestroy, AfterViewChecked {
   debtNumber: string = "";
   debtSum: string = "";
   debtSumAgorot: string = "";
-  pasportName:string="";
+  pasportName: string = "";
 
   price: string
   _sms: number = 0;
@@ -138,28 +138,48 @@ export class DebtComponent implements OnInit, OnDestroy, AfterViewChecked {
   // }
 
   meshulam() {
-    
-    let sum = parseInt(this.debtSum) + parseInt(this.debtSumAgorot) * 0.01;
     let ID: number;
-    const data: any = {
-      name: this.creditName,
-      email: this.pasportNumber,
-      phone: '',
-      price: this.packageSum,
-      pasport:this.pasportName,
-    }
-    console.log(data);
-    
+    let sum = parseInt(this.debtSum) + parseInt(this.debtSumAgorot) * 0.01;
+    if (this.params) {
+      const data: any = {
+        name: this.creditName,
+        email: this.pasportNumber,
+        phone: '',
+        price: this.packageSum,
+        pasport: this.pasportName,
+      }
+
     this.sendService.createCustomeray(data).then((res: any) => {
-      console.log(res,"kkkkkkkkkkkkkkkkk");
-      
+      console.log(res, "kkkkkkkkkkkkkkkkk");
+
       if (!res.Errors) {
         ID = res.ID
       }
       this.router.navigate(['/pay'], { queryParams: { FullName: this.creditName, Email: this.pasportNumber, Phone: this.debtNumber, Sum: sum, ID: res.ID } });
 
     })
+  }
 
+  else{
+    const data: any = {
+      name: this.creditName,
+      email: this.pasportNumber,
+      phone: this.debtNumber,
+      price: this.packageSum,
+      pasport: this.pasportName,
+      sum:sum,
+    }
+
+  this.sendService.createCustomeray(data).then((res: any) => {
+    console.log(res, "kkkkkkkkkkkkkkkkk");
+
+    if (!res.Errors) {
+      ID = res.ID
+    }
+    this.router.navigate(['/pay'], { queryParams: { FullName: this.creditName, Email: this.pasportNumber, Phone: this.debtNumber, Sum: sum, ID: res.ID } });
+
+  })
+  }
 
 
 
