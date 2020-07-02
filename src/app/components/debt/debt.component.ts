@@ -61,19 +61,19 @@ export class DebtComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.hidedebtNumber = false;
       }
     })
+
   }
 
   ngAfterViewChecked(): void {
-    if (this.params && this.params.sum) {
-      this.debtSum = this.params.sum;
-    }
-    if (this.params && this.params.murshulam) {
-      this.hidedebtNumber = false;
-    }
+    // if (this.params && this.params.sum) {
+    //   this.debtSum = this.params.sum;
+    // }
+    // if (this.params && this.params.murshulam) {
+    //   this.hidedebtNumber = false;
+    // }
   }
 
   ngOnInit() {
-    console.log(this.debtSum);
 
     this.user_sub = this.auth.getUserState().subscribe(user => {
       this.user = user;
@@ -139,8 +139,7 @@ export class DebtComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   meshulam() {
     let ID: number;
-    let sum = parseInt(this.debtSum) + parseInt(this.debtSumAgorot) * 0.01;
-    if (this.params) {
+    if (this.params && this.params.murshulam) {
       const data: any = {
         name: this.creditName,
         email: this.pasportNumber,
@@ -149,40 +148,39 @@ export class DebtComponent implements OnInit, OnDestroy, AfterViewChecked {
         pasport: this.pasportName,
       }
 
-    this.sendService.createCustomeray(data).then((res: any) => {
-      console.log(res, "kkkkkkkkkkkkkkkkk");
+      this.sendService.createCustomeray(data).then((res: any) => {
+        if (!res.Errors) {
+          ID = res.ID
+        }
+        this.router.navigate(['/pay'], { queryParams: { FullName: this.creditName, Email: this.pasportNumber, Phone: this.debtNumber, Sum: this.packageSum, ID: res.ID } });
 
-      if (!res.Errors) {
-        ID = res.ID
+      })
+    }
+
+
+
+    else  {
+      let sum = parseInt(this.debtSum) + parseInt(this.debtSumAgorot) * 0.01;
+      const data: any = {
+        name: this.creditName,
+        email: this.pasportNumber,
+        phone: this.debtNumber,
+        price: this.packageSum,
+        pasport: this.pasportName,
+        sum: sum,
       }
-      this.router.navigate(['/pay'], { queryParams: { FullName: this.creditName, Email: this.pasportNumber, Phone: this.debtNumber, Sum: sum, ID: res.ID } });
+      this.sendService.createCustomeray(data).then((res: any) => {
 
-    })
-  }
+        if (!res.Errors) {
+          ID = res.ID
+        }
+        this.router.navigate(['/pay'], { queryParams: { FullName: this.creditName, Email: this.pasportNumber, Phone: this.debtNumber, Sum: sum, ID: res.ID } });
 
-  else{
-    const data: any = {
-      name: this.creditName,
-      email: this.pasportNumber,
-      phone: this.debtNumber,
-      price: this.packageSum,
-      pasport: this.pasportName,
-      sum:sum,
+      })
     }
-
-  this.sendService.createCustomeray(data).then((res: any) => {
-    console.log(res, "kkkkkkkkkkkkkkkkk");
-
-    if (!res.Errors) {
-      ID = res.ID
-    }
-    this.router.navigate(['/pay'], { queryParams: { FullName: this.creditName, Email: this.pasportNumber, Phone: this.debtNumber, Sum: sum, ID: res.ID } });
-
-  })
-  }
-
 
 
   }
 
 }
+
